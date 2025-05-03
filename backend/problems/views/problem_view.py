@@ -4,7 +4,6 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from ..permissions import IsStaffUser
 from ..serializers.problem_serializer import ProblemSerializer,ProblemListSerializer,ProblemAllFieldsSerializer
 from ..serializers.validators import ProblemCreateSerializer
 from ..models import Problems
@@ -13,7 +12,7 @@ class ProblemView(ViewSet):
 
     def get_permissions(self):
         if self.action in ['list','problem_create']:
-            self.permission_classes = [IsStaffUser, IsAuthenticated]
+            self.permission_classes = [ IsAuthenticated]
         return super().get_permissions()
 
 

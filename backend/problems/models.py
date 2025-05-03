@@ -25,7 +25,7 @@ class Problems(models.Model):
     slug = models.SlugField(blank=True,null=True)
     hints = models.TextField(null=True,blank=True)
     tags = models.ManyToManyField(Tags,related_name="problem_tags")
-    testcases = models.TextField(null=True,blank=True)
+    testcases = models.TextField()
     starter_codes = models.JSONField(default=defaultcodes)
     solution_codes = models.JSONField(default=defaultcodes)
 

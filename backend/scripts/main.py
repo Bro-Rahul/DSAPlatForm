@@ -1,9 +1,10 @@
 from problems.models import Problems
+from users.models import Users
 
 def query():
-    data = Problems.objects.prefetch_related("tags")
-        
-    print(data)
+    data = Users.objects.get(email="goku@gmail.com")
+
+    print(data.id)
 
 def run():
     query()
