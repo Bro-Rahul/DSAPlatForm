@@ -3,7 +3,7 @@ from django.core.validators import MinLengthValidator,MaxLengthValidator
 from django.utils.text import slugify
 from users.models import Users
 from django.urls import reverse
-from .constants import defaultcodes
+from constants.main import defaultcodes
 
 class Tags(models.Model):
     tag = models.CharField(unique=True)

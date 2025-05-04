@@ -6,7 +6,9 @@ from problems.models import Problems
 from problems.serializers.admin.problemSerializer import ProblemListSerializer,ProblemCreateUpdateSerializer
 from problems.permissions.admin.index import IsStaffUser,IsProblemCreator
 from rest_framework.permissions import IsAuthenticated
-from problems.constants import formateErrorMessage
+from constants.main import formateErrorMessage
+from testcaseValidators.main import validators_func
+
 
 class ProblemView(viewsets.ViewSet):
     model = Problems
@@ -17,7 +19,7 @@ class ProblemView(viewsets.ViewSet):
     def get_permissions(self):
         if self.action in ['list','create_problem']:
             self.permission_classes = [IsAuthenticated,IsStaffUser]
-        elif self.action in ['update_problem','delete_problem']:
+        elif self.action in ['update_problem','delete_problem','add_new_testcases']:
             self.permission_classes = [IsAuthenticated,IsStaffUser,IsProblemCreator]
         return super().get_permissions()
     
@@ -72,7 +74,30 @@ class ProblemView(viewsets.ViewSet):
 
     @action(detail=True,methods=['DELETE',],url_path='delete')
     def delete_problem(self, request, slug=None):
-        obj = get_object_or_404(self.queryset,slug=slug) 
+        obj = get_object_or_404(self.queryset,slug=slug)
         self.check_object_permissions(request,obj)
         obj.delete()
         return Response({'info':'Delete Success'})
+
+
+    @action(detail=True,methods=["POST",],url_path="add-testcase")
+    def add_new_testcases(self,request,slug=None):
+        obj = get_object_or_404(Problems,slug=slug)
+        self.check_object_permissions(request,obj)
+        testcases = request.data.get("testcases",None)
+        formated_slug = slug.replace("-","_")
+        try:
+            validators_func(slug=formated_slug,testcases=testcases)
+        except Exception as e:
+            return Response({'info':['notify admin to add the validator for your problem then try']},status=status.HTTP_403_FORBIDDEN)
+        result = validators_func(formated_slug,testcases=testcases)
+        if not result['valid']:
+            errors = [f"at testcase {result['at']}",*result['error']]
+            return Response({'info':errors},status=status.HTTP_400_BAD_REQUEST)
+        else:
+            newTestcase = ""
+            for testcase in testcases:
+                newTestcase += f"\n{testcase}"
+            obj.testcases += newTestcase
+            obj.save()
+            return Response({'info':'New TestCases has been added success '},status=status.HTTP_200_OK)

@@ -4,18 +4,7 @@ from django.db import transaction
 from problems.models import Problems,Tags
 from users.models import Users
 from django.utils.text import slugify
-
-class DynamicFieldsModelSerializer(serializers.ModelSerializer):
-    def __init__(self, *args, **kwargs):
-        fields = kwargs.pop('fields', None)
-        super().__init__(*args, **kwargs)
-
-        if fields is not None:
-            allowed = set(fields)
-            existing = set(self.fields)
-            for field_name in existing - allowed:
-                self.fields.pop(field_name)
-
+from ..utils.DynamicModelFieldSerializer import DynamicFieldsModelSerializer
 
 class ProblemListSerializer(DynamicFieldsModelSerializer):
 

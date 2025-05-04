@@ -23,4 +23,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("v1/",include("users.urls")),
     path("v1/",include("problems.urls")),
+    path("v1/",include("submissions.urls")),
 ] + debug_toolbar_urls()
