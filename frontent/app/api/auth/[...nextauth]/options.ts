@@ -2,7 +2,7 @@ import type { NextAuthOptions } from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials"
-import { baseUrl } from "@/http";
+import { baseURL } from "@/http";
 import { socialLogin } from "@/http/userHttp";
 
 const options: NextAuthOptions = {
@@ -70,7 +70,7 @@ const options: NextAuthOptions = {
                 // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
                 // You can also use the `req` object to obtain additional parameters
                 // (i.e., the request IP address)
-                const res = await fetch(`${baseUrl}/users/auth/login`, {
+                const res = await fetch(`${baseURL}/users/auth/login`, {
                     method: 'POST',
                     body: JSON.stringify(credentials),
                     headers: { "Content-Type": "application/json" },

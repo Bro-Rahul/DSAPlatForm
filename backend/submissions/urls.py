@@ -1,6 +1,6 @@
 from django.urls import include,path
-from .routes.admin.admin_routes import adminRoutes
+from .routes.general.general_routes import generalRoutes
 
 urlpatterns = [
-    path("",include(adminRoutes.urls))
+    path("",include(generalRoutes.urls))
 ]

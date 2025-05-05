@@ -1,5 +1,5 @@
 import React from "react";
-import { getProblem } from "@/http/problemHttp";
+import { getProblem } from "@/http/general/problemHttp";
 import UpdateProblemCard from "@/components/updateProblems/UpdateProblemCard";
 import { UpdateProblemType } from "@/types/store";
 import { decodeTestCases } from "@/lib/utils";

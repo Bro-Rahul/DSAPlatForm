@@ -1,11 +1,11 @@
 import { SetProblemType, UpdateProblemType } from "@/types/store";
-import { baseUrl } from ".";
+import { baseURL } from ".";
 import axios from "axios";
 import { ProblemList } from "@/types/problem";
 import { formateSetProblemBodyData } from "@/lib/utils";
 import { UpdateProblemResponseType } from "@/types/response";
 
-const problemBaseUrl = `${baseUrl}/problems`
+const problemBaseUrl = `${baseURL}/problems`
 
 const problemApi = axios.create({
     baseURL : problemBaseUrl,

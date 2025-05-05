@@ -1,9 +1,8 @@
 import options from '@/app/api/auth/[...nextauth]/options';
 import ProblemTable from '@/components/utils/ProblemTable';
-import { getProblemList } from '@/http/problemHttp'
 import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation';
-import React from 'react'
+import {getProblemList} from '@/http/admin/problemHttp';
 
 
 const UpdateProblemsListPage = async () => {

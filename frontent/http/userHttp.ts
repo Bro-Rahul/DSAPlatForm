@@ -1,8 +1,8 @@
 import { LoginForm, RegisterForm, SocialLoginType } from "@/types/form";
-import { baseUrl } from ".";
+import { baseURL } from ".";
 import axios from "axios";
 
-const userBaseUrl = `${baseUrl}/users`
+const userBaseUrl = `${baseURL}/users`
 
 export async function loginUser(payload: LoginForm) {
     try {

@@ -35,7 +35,6 @@ class UserView(ViewSet):
     @action(methods=["POST"], detail=False, url_path="auth/register/staff")
     def registerStaffUser(self, request):
         serializer = RegisterSerializer(data=request.data)
-        print(request.data)
         if serializer.is_valid():
             username = serializer.validated_data.get("username")
             email = serializer.validated_data.get("email")

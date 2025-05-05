@@ -1,5 +1,5 @@
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import getProblemList from '@/http/general/problemHttp'
+import { getProblemList } from '@/http/general/problemHttp';
 import { Badge } from '@/components/ui/badge';
 import React from 'react'
 import Link from 'next/link';

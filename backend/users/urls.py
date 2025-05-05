@@ -6,10 +6,10 @@ from .views import jwtAuth
 
 router = DefaultRouter()
 
-router.register("",views.UserView,basename="user-related")
-router.register("auth/login-with",jwtAuth.LoginWithSocialAccounts,basename='social-login')
+router.register("users",views.UserView,basename="user-related")
+router.register("users/auth/login-with",jwtAuth.LoginWithSocialAccounts,basename='social-login')
 
 urlpatterns = [
     path("",include(router.urls)),
-    path("auth/login",jwtAuth.CustomTokenObtainPairView.as_view(),name="jwt-login"),
+    path("users/auth/login",jwtAuth.CustomTokenObtainPairView.as_view(),name="jwt-login"),
 ]

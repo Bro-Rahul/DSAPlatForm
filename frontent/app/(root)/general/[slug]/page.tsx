@@ -1,4 +1,4 @@
-import { getProblem } from '@/http/problemHttp'
+import { getProblem } from '@/http/general/problemHttp'
 import React from 'react'
 import ProblemAbouts from '@/components/solve/ProblemAbouts'
 import SandBox from '@/components/solve/SandBox'
