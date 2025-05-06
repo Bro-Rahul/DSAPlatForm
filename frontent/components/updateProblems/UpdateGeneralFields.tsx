@@ -1,5 +1,5 @@
 import React from 'react'
-import ProblemCard, { ProblemMultiValueFields, ProblemStringFields } from '../utils/ProblemCard'
+import ProblemCard, {  ProblemStringFields } from '../utils/ProblemCard'
 import useUpdateProblem from '@/store/useUpdateProblem'
 import ProblemLevel from '../utils/ProblemLevel'
 import MDEditor from '@uiw/react-md-editor'
@@ -34,7 +34,6 @@ const UpdateGeneralFields: React.FC<{
                     preview='live'
                 />
             </div>
-            
         </ProblemCard>
     )
 }

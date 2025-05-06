@@ -5,10 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
 import UpdateCodeEditor from '../editor/UpdateCodeEditor'
 import useUpdateProblem from '@/store/useUpdateProblem'
 import dynamic from 'next/dynamic'
-import TestCaseCard from '../utils/TestCaseCard'
-import { decodeTestCases } from '@/lib/utils'
-import { UpdateProblemResponseType } from '@/types/response'
 import UpdateTestCase from './UpdateTestCase'
+
 const UpdateGeneralFields = dynamic(() => import("@/components/updateProblems/UpdateGeneralFields"), {
   ssr: false,
   loading: () => <p>Loading...</p>,

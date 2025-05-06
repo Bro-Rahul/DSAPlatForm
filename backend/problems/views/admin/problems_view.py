@@ -30,7 +30,7 @@ class ProblemView(viewsets.ViewSet):
         serializer = ProblemListSerializer(
             data,
             many=True,
-            fields=['tags','id','difficulty','title','slug']
+            fields=['tags','id','level','title','slug']
         )
         return Response(serializer.data,status=status.HTTP_200_OK)
 

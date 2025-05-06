@@ -7,6 +7,7 @@ from django.utils.text import slugify
 from ..utils.DynamicModelFieldSerializer import DynamicFieldsModelSerializer
 
 class ProblemListSerializer(DynamicFieldsModelSerializer):
+    level = serializers.SerializerMethodField()
 
     tags = serializers.StringRelatedField(many=True)
     difficulty = serializers.SerializerMethodField()
@@ -16,6 +17,9 @@ class ProblemListSerializer(DynamicFieldsModelSerializer):
         fields = '__all__'
     
     def get_difficulty(self,obj):
+        return obj.get_level_display()
+
+    def get_level(self,obj):
         return obj.get_level_display()
 
 
