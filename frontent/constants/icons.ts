@@ -16,6 +16,8 @@ import commentIcons from "@/public/icons/comments.png"
 import addWhiteIcons from "@/public/icons/addWhite.png"
 import terminalIcons from "@/public/icons/terminal.png"
 import resultsIcons from "@/public/icons/results.png"
+import trashIcons from "@/public/icons/trash.png"
+
 
 export const SVG = {
     next,
@@ -38,5 +40,6 @@ export const icons = {
     commentIcons,
     addWhiteIcons,
     terminalIcons,
-    resultsIcons
+    resultsIcons,
+    trashIcons
 }

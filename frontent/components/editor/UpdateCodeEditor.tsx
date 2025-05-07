@@ -3,6 +3,7 @@ import Editor from '@monaco-editor/react';
 import LanguagePicker from './LanguagePicker';
 import { LanguageSupportedType } from '@/types/store';
 import useUpdateProblem from '@/store/useUpdateProblem';
+import { Button } from '../ui/button';
 
 
 const CodeEditor: React.FC<{
@@ -13,7 +14,7 @@ const CodeEditor: React.FC<{
     const [selectedLang, setSelectedLang] = useState<keyof LanguageSupportedType>('java');
     const { updateProblemSingleFields, problems } = useUpdateProblem();
     return (
-        <section className='flex flex-col gap-2 overflow-hidden'>
+        <section className='flex flex-col gap-2 overflow-hidden relative'>
             <LanguagePicker value={selectedLang} onValueChange={(e) => setSelectedLang(e as keyof LanguageSupportedType)} />
             <Editor
                 className='overflow-hidden h-screen'
@@ -27,6 +28,7 @@ const CodeEditor: React.FC<{
                 language={selectedLang}
                 value={problems[slug][codeType][selectedLang]}
             />
+            <Button className='absolute bottom-1 w-full'>Update Problem</Button>
         </section>
     )
 }

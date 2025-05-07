@@ -11,6 +11,8 @@ import {
 import { ProblemList } from '@/types/problem'
 import Link from 'next/link'
 import { Badge } from '../ui/badge'
+import Image from 'next/image'
+import { icons } from '@/constants/icons'
 
 const ProblemTable: React.FC<{
     problems: ProblemList[]
@@ -25,6 +27,7 @@ const ProblemTable: React.FC<{
                         <TableHead>Title</TableHead>
                         <TableHead>Level</TableHead>
                         <TableHead>Tags</TableHead>
+                        <TableHead>Delete</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -34,6 +37,7 @@ const ProblemTable: React.FC<{
                             <TableCell className='hover:underline hover:text-blue-400 cursor-pointer'><Link href={`/admin/updateproblems/${problem.slug}`}>{problem.title}</Link></TableCell>
                             <TableCell>{problem.level}</TableCell>
                             <TableCell className="flex gap-2">{problem.tags.map((tag,i)=><Badge key={i}>{tag}</Badge>)}</TableCell>
+                            <TableCell><Image src={icons.trashIcons} priority alt='delete-problem' width={25} height={25} className='cursor-pointer'/></TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

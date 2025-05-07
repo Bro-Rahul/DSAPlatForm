@@ -47,7 +47,8 @@ const UpdateProblemCard: React.FC<{
           slug={slug}
         />
       </TabsContent>
-      <TabsContent value="starter">
+      <TabsContent 
+        value="starter">
         <UpdateCodeEditor
           codeType='starter_codes'
           slug={slug}
