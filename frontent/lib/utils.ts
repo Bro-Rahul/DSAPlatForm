@@ -37,7 +37,7 @@ export function encodeTestCases(testcases:TestCaseType[]):string{
         temp += `${key}=${val}~`
       }
     }
-    temp += `$${expectedOutput}`
+    // temp += `$${expectedOutput}`  remove the output from the testcase not needed to store output
     testcase.push(temp);
   }
   return testcase.join("\n");
@@ -65,8 +65,8 @@ export function decodeTestCases(testcases:string):{
   const inputParameters:ParameterType[] = [];
   let parametersAdded :boolean = false;
   for(const test of testcase){
-    const [inputs,outputs] = test.split("$");
-    const inputsFields = inputs.split("~")
+    // const [inputs,outputs] = test.split("$");
+    const inputsFields = test.split("~")
     const temp:string[][] = [];
     for(let i=0;i<inputsFields.length;i++){
       const [input,output]= inputsFields[i].split("=");
@@ -77,7 +77,7 @@ export function decodeTestCases(testcases:string):{
     }
     parametersAdded = true;
     const finalTestCase = Object.fromEntries(temp);
-    finalTestCase['expectedOutput'] = outputs;
+    // finalTestCase['expectedOutput'] = outputs;
     formatedTestCase.push(finalTestCase);
   }
   return {

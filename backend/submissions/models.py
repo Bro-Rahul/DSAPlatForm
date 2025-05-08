@@ -39,4 +39,8 @@ class Submissions(models.Model):
     status = models.CharField(
         choices=Status.choices,
     )
+    description = models.CharField(
+        null=True,
+        blank=True
+    )
     

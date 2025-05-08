@@ -6,6 +6,7 @@ class ProblemListSerializer(DynamicFieldsModelSerializer):
 
     tags = serializers.StringRelatedField(many=True)
     difficulty = serializers.SerializerMethodField()
+    level = serializers.SerializerMethodField()
 
     class Meta:
         model = Problems
@@ -13,3 +14,14 @@ class ProblemListSerializer(DynamicFieldsModelSerializer):
     
     def get_difficulty(self,obj):
         return obj.get_level_display()
+
+    def get_level(self,obj):
+        return obj.get_level_display()
+
+    def to_representation(self, instance:Problems):
+        obj = super().to_representation(instance)
+        testcases = ""
+        test1,test2 = instance.testcases.split("\n")[:2]
+        testcases = f"{test1}\n{test2}"
+        obj['testcases'] = testcases
+        return obj

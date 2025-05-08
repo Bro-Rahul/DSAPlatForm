@@ -1,16 +1,17 @@
 'use client'
 import React from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import useSandBox from '@/store/useSandBox'
 import TestCase from './TestCase'
 import Image from 'next/image'
 import { icons } from '@/constants/icons'
+import useTestCaseProvider from '@/hook/useTestCaseProvider'
+import TestResult from './TestResult'
 
 
 const DisplayTest: React.FC<{
   slug: string
 }> = ({ slug }) => {
-  const { config, resetTestCase } = useSandBox();
+  const {testcases,resetTestCase} = useTestCaseProvider();
   return (
     <div className='flex flex-col w-full h-1/2 px-1 bg-zinc-800 relative'>
       <Tabs defaultValue="testcase">
@@ -41,14 +42,14 @@ const DisplayTest: React.FC<{
         <TabsContent value="testcase">
           <TestCase
             slug={slug}
-            testcases={config?.[slug]?.testcases || []}
+            testcases={testcases}
           />
         </TabsContent>
-        <TabsContent value="testresult">Run To check the results.</TabsContent>
+        <TabsContent value="testresult"><TestResult/></TabsContent>
       </Tabs>
       <div className='absolute top-2 right-1 gap-2 flex px-2'>
         <p
-          onClick={e => resetTestCase(slug)}
+          onClick={resetTestCase}
           className='inline-flex items-center text-sm font-normal gap-1 cursor-pointer'>
           Reset TestCase
           <Image

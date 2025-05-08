@@ -17,7 +17,7 @@ const ProblemAbouts: React.FC<{
             <MdxDescription
                 mdxString={problem.description}
             />
-            <ProblemMetaDetails
+           <ProblemMetaDetails
                 hints={problem.hints.split("\n")}
                 tags={problem.tags}
             />

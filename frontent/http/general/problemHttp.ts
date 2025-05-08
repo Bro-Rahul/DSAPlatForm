@@ -1,6 +1,7 @@
 import { UpdateProblemResponseType } from "@/types/response";
 import { generalApi } from "..";
 import { ProblemList } from "@/types/problem";
+import { UpdateProblemType } from "@/types/store";
 
 
 export async function getProblemList():Promise<ProblemList[]> {

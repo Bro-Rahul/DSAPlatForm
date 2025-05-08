@@ -4,6 +4,7 @@ import React, { useEffect } from 'react'
 import useSandBox from '@/store/useSandBox'
 import DisplayTest from './DisplayTest'
 import CodeEditor from './CodeEditor'
+import TestCaseProvider from '@/context/TestCaseProvider'
 
 const SandBox: React.FC<{
   starterCodes: LanguageSupportedType,
@@ -27,12 +28,17 @@ const SandBox: React.FC<{
   }, []);
   return (
     <div className='flex flex-col w-full'>
-      <CodeEditor
-        slug={slug}
-      />
-      <DisplayTest
-        slug={slug}
-      />
+      <TestCaseProvider
+        testcases={testcases}
+      >
+        <CodeEditor
+          slug={slug}
+        />
+
+        <DisplayTest
+          slug={slug}
+        />
+      </TestCaseProvider>
     </div>
   )
 }

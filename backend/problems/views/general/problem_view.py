@@ -21,7 +21,7 @@ class ProblemView(ViewSet):
 
     @method_decorator(cache_page(60*60*2,key_prefix="problems"))
     def list(self,request):
-        serializer = ProblemListSerializer(self.get_queryset(),fields = ['title','difficulty','slug','tags',"hints"],many=True)
+        serializer = ProblemListSerializer(self.get_queryset(),fields = ['title','level','slug','tags',"hints"],many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
     @method_decorator(cache_page(60*60*2))
@@ -30,6 +30,6 @@ class ProblemView(ViewSet):
         data = get_object_or_404(queryset,slug=slug)
         serializer  = ProblemListSerializer(
             data,
-            fields = ['tags','id','difficulty','title','testcases','starter_codes','solution_codes']
+            fields = ['tags','id','difficulty','hints','description','title','testcases','starter_codes']
         )
         return Response(serializer.data,status=status.HTTP_200_OK)

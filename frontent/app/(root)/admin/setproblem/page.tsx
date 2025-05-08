@@ -145,7 +145,7 @@ const SetProblemPage: React.FC = () => {
       </div>
       <Button
         onClick={handleClick}
-        className='bg-green-600 hover:bg-green-700 cursor-pointer rounded-2xl text-white font-bold text-xl w-[90%] mx-auto'>
+        className='save-btn'>
         Set Problem
       </Button>
     </div>

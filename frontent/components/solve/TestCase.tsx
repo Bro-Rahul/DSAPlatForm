@@ -1,21 +1,21 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "../ui/input";
 import { TestCaseType } from "@/types/store";
-import useSandBox from "@/store/useSandBox";
 import Image from "next/image";
 import { icons } from "@/constants/icons";
 import { useState } from "react";
+import useTestCaseProvider from "@/hook/useTestCaseProvider";
 
 const TestCase: React.FC<{
   testcases: TestCaseType[]
   slug: string
 }> = ({ testcases, slug }) => {
-  const { removeTestCase, updateTestCase,addTestCase } = useSandBox();
   const displayTestCases = testcases.map(({expectedOutput,...fields})=>fields)
   const [selectedTab,setSelectedTab] = useState<number>(1)
+  const {removeTestCase,addTestCase,updatedTestCase} = useTestCaseProvider();
 
   const handleRemoveTab = (index:number)=>{
-    removeTestCase(slug,index);
+    removeTestCase(index);
     setSelectedTab(pre=>pre-1);
   }
 
@@ -47,7 +47,7 @@ const TestCase: React.FC<{
           </TabsList>
           <span 
             className="add-testcase"
-            onClick={e=>addTestCase(slug)}
+            onClick={addTestCase}
           >+</span>
         </div>
         {displayTestCases.map((item, i) => (
@@ -59,7 +59,7 @@ const TestCase: React.FC<{
                   className='bg-transparent w-full outline-none'
                   type="text"
                   defaultValue={value}
-                  onChange={e => updateTestCase(slug, i, keys, e.target.value)}
+                  onChange={e => updatedTestCase(i,keys,e.target.value)}
                 />
               </div>
             ))}

@@ -3,11 +3,47 @@ import ProblemCard, {  ProblemStringFields } from '../utils/ProblemCard'
 import useUpdateProblem from '@/store/useUpdateProblem'
 import ProblemLevel from '../utils/ProblemLevel'
 import MDEditor from '@uiw/react-md-editor'
+import { Button } from '../ui/button'
+import { patchProblem } from '@/http/admin/problemHttp'
+import { useSession } from 'next-auth/react'
+import toast from 'react-hot-toast'
+import Toast from '../toast'
+import { icons } from '@/constants/icons'
 
 const UpdateGeneralFields: React.FC<{
     slug: string,
 }> = ({ slug }) => {
     const { updateProblemSingleFields, problems } = useUpdateProblem();
+    const {data} = useSession()
+
+    const handleSubmit = async()=>{
+        try{
+            await patchProblem(slug,data!.user.access,{
+                description : problems[slug].description,
+                title : problems[slug].title,
+                difficulty : problems[slug].difficulty
+            })
+            toast.custom(
+                <Toast
+                    success
+                    icon={icons.successIcon}
+                    text='General Fields Updated !'
+                />,{
+                    position : "bottom-right",
+                    duration : 3000  
+                })
+        }catch(err:any){
+            toast.custom(
+                <Toast
+                    success={false}
+                    icon={icons.crossIcon}
+                    text='Falied to Update Problem'
+                />,{
+                    position : "bottom-right",
+                    duration : 3000
+                })
+        }
+    }
 
     return (
         <ProblemCard className='flex flex-col w-full h-full p-3 gap-5'>
@@ -34,6 +70,12 @@ const UpdateGeneralFields: React.FC<{
                     preview='live'
                 />
             </div>
+            <Button 
+                className='save-btn'
+                onClick={handleSubmit}
+                >
+                Save
+            </Button>
         </ProblemCard>
     )
 }
