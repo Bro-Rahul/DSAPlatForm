@@ -8,12 +8,16 @@ import { postRunCode,postSubmitCode } from '@/http/general/submissionHttp'
 import { icons } from '@/constants/icons'
 import { Button } from '../ui/button'
 import useTestCaseProvider from '@/hook/useTestCaseProvider'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 const CodeEditor: React.FC<{
     slug: string
 }> = ({ slug }) => {
     const { config, updateCodes } = useSandBox();
-    const {getEncodedTestCases,updateTestCaseResults} = useTestCaseProvider();
+    const {data} = useSession();
+    const router = useRouter()
+    const {getEncodedTestCases,updateTestCaseResults,handleToggle} = useTestCaseProvider();
     const [selectedLang, setSelectedLang] = useState<keyof LanguageSupportedType>("java");
     const handleRunCode = async()=>{
         try{
@@ -22,11 +26,28 @@ const CodeEditor: React.FC<{
                 lang:selectedLang,
                 testcases:getEncodedTestCases()
             });
+            handleToggle("testresult")
             updateTestCaseResults(response);
         }catch(err){
             console.log(err);
         }
     }
+    const handleSubmitCode = async()=>{
+        if(!data?.user?.access){
+            router.push('/auth/login')
+        }
+        try{
+            const response = await postSubmitCode(slug,data!.user!.access,{
+                code:config[slug].starterCode[selectedLang],
+                lang:selectedLang,
+            });
+            handleToggle("testresult");
+            updateTestCaseResults(response);
+        }catch(err){
+            console.log(err);
+        }
+    }
+
     
     return (
         <div className='flex flex-col w-full h-1/2'>
@@ -51,7 +72,7 @@ const CodeEditor: React.FC<{
                 </div>
                 <div className='flex gap-1'>
                     <Button onClick={handleRunCode}>Run</Button>
-                    <Button>Submit</Button>
+                    <Button onClick={handleSubmitCode}>Submit</Button>
                 </div>
             </div>
             <Editor

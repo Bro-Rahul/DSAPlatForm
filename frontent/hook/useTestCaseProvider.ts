@@ -62,6 +62,13 @@ const useTestCaseProvider = () => {
       }));
     }
 
+    const handleToggle = (to:string)=>{
+      setTestCases(pre=>({
+        ...pre,
+        toggle : to
+      }))
+    }
+
     return {
       ...results,
       setTestCases,
@@ -70,7 +77,8 @@ const useTestCaseProvider = () => {
       updatedTestCase,
       removeTestCase,
       getEncodedTestCases,
-      updateTestCaseResults
+      updateTestCaseResults,
+      handleToggle
     }
 }
 

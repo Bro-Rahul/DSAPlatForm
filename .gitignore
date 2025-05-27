@@ -1,4 +1,5 @@
 frontent/.next
 frontent/node_modules
 backend/venv
+backend/.env
 frontent/.env.local

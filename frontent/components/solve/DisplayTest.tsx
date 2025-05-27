@@ -11,10 +11,10 @@ import TestResult from './TestResult'
 const DisplayTest: React.FC<{
   slug: string
 }> = ({ slug }) => {
-  const {testcases,resetTestCase} = useTestCaseProvider();
+  const {testcases,toggle,handleToggle,resetTestCase} = useTestCaseProvider();
   return (
     <div className='flex flex-col w-full h-1/2 px-1 bg-zinc-800 relative'>
-      <Tabs defaultValue="testcase">
+      <Tabs value={toggle} onValueChange={e=>handleToggle(e)}>
         <TabsList className='border-b-2 items-start justify-start flex gap-4'>
           <TabsTrigger
             className='px-8'

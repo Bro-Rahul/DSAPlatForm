@@ -77,6 +77,9 @@
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
 }
+body{
+  background-color: #020617;
+}
 
 .dark {
   --background: oklch(0.141 0.005 285.823);
@@ -161,4 +164,8 @@
 
 .save-btn{
   @apply bg-green-600 hover:bg-green-700 cursor-pointer rounded-2xl text-white font-bold text-xl w-[90%] mx-auto
+}
+
+.mdx-content{
+  @apply bg-zinc-800
 }

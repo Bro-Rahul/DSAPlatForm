@@ -5,6 +5,7 @@ import React, { createContext, useState, ReactNode } from 'react'
 type TestCaseStateType = {
     testcases: TestCaseType[],
     testresults : TestCaseResultsType|undefined
+    toggle : string,
 }
 
 type TestCaseContextType = {
@@ -22,6 +23,7 @@ const TestCaseProvider: React.FC<{
     const [allTestCase, setTestCases] = useState<TestCaseStateType>({
         testcases : testcases,
         testresults : undefined,
+        toggle : "testcase"
     });
 
     return (

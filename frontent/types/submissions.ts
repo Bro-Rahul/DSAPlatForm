@@ -9,6 +9,7 @@ export type TestCaseResultsType = {
     inValidTestCase: boolean,
     executionError: boolean,
     timeOut: boolean,
-    errors: string|InValidTestCaseType,
+    timeOutAt : number|null,
+    errors: string|InValidTestCaseType
     result: string[]
 }

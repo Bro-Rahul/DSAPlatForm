@@ -8,8 +8,7 @@ import { signIn } from 'next-auth/react'
 const SocialLoginOptions = () => {
     const onClick = (option:"google"|"github")=>{
         const result = signIn(option,{
-            redirect : true,
-            callbackUrl : '/'
+            redirect : false,
         });
     }
     return (
