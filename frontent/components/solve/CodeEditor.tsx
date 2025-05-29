@@ -53,6 +53,11 @@ const CodeEditor: React.FC<{
                 language={selectedLang}
                 value={config?.[slug]?.starterCode?.[selectedLang] || ''}
                 onChange={e => updateCodes(slug, selectedLang, e!)}
+                options={{
+                    minimap : {
+                        enabled : false
+                    }
+                }}
             />
         </div>
     )

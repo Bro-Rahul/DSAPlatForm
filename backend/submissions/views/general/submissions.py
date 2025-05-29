@@ -1,0 +1,24 @@
+from submissions.models import Submissions
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from rest_framework import viewsets,status
+from rest_framework.permissions import IsAuthenticated
+
+from submissions.serializers.SubmissionSerializer import SubmissionSerializer
+
+from django.shortcuts import get_list_or_404
+
+class SubmissionsViewSet(viewsets.ViewSet):
+    lookup_field = 'slug'
+    permission_classes = []
+    
+    """ def get_permissions(self):
+        if self.action in ['retrieve',]:
+            self.permission_classes = [IsAuthenticated,]
+        return super().get_permissions() """
+    
+
+    def retrieve(self, request, slug=None):
+        submissions = Submissions.objects.defer('user','problem').filter(problem__slug=slug,user__id=3).values('id','submission_code','submission_lang','status','created_at',"details")
+        serializer = SubmissionSerializer(submissions,many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)

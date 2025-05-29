@@ -20,7 +20,6 @@ class Submissions(models.Model):
         Users,
         related_name='submissions',
         on_delete=models.CASCADE
-    
     )
     problem = models.ForeignKey(
         Problems,
@@ -39,11 +38,7 @@ class Submissions(models.Model):
     status = models.CharField(
         choices=Status.choices,
     )
-    description = models.CharField(
-        null=True,
-        blank=True
-    )
-    
+    details = models.JSONField(default=dict)
 
     def __str__(self):
         return f"{self.problem.title} by {self.user.username}"

@@ -1,3 +1,5 @@
+import { LanguageSupportedType } from "./store"
+
 export type InValidTestCaseType = {
     valid: boolean,
     at: number,
@@ -12,4 +14,27 @@ export type TestCaseResultsType = {
     timeOutAt : number|null,
     errors: string|InValidTestCaseType
     result: string[]
+}
+
+export type SubmissionDetailType = {
+    status: "Rejected" | "Accpted",
+    inValidTestCase : boolean,
+    executionError : boolean,
+    timeOut: boolean,
+    timeOutAt : number|null, 
+    testcasePassed : string,
+    testcase: string,
+    output : string,
+    errors:string,
+    dateTimestr : string
+
+}
+
+export type submissionsHistoryType = {
+    id : number,
+    submission_code : string,
+    submission_lang : keyof LanguageSupportedType,
+    details : SubmissionDetailType,
+    created_at : string,
+    status : "accepted"|"Rejected"
 }

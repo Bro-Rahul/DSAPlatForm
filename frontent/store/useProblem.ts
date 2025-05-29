@@ -1,3 +1,4 @@
+import { LanguageSupportedType } from "@/types/store"
 import {create} from "zustand"
 
 type ResultType = {
@@ -9,6 +10,8 @@ type ResultType = {
     executionError:boolean,
     error : string,
     timeOutAt : number|null,
+    code : string,
+    lang : keyof LanguageSupportedType
 }
 
 type SubmissionsResultType = {

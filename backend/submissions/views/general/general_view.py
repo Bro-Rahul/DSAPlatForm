@@ -13,15 +13,16 @@ from submissions.models import Submissions
 from datetime import datetime
 import uuid
 import subprocess
+import json
 
 class SubmissionsView(viewsets.ViewSet):
     lookup_field = 'slug'
     
-    """ def get_permissions(self):
+    def get_permissions(self):
         if self.action in ["submit_code"]:
             self.permission_classes = [IsAuthenticated]
         return super().get_permissions()
- """
+
     @action(detail=True,methods=["POST",],url_path='run-code')
     def run_code(self,request,slug:str=None):
         serializer = RunCodeValidator(data=request.data)
@@ -172,7 +173,18 @@ class SubmissionsView(viewsets.ViewSet):
                 'docker', 'rm', '-f', container_name
                 ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             submission.status = Submissions.Status.REJECTED
-            submission.description = "Time Limit Exists"
+            submission.details = {   
+                'status': "Rejected",
+                'inValidTestCase': False,
+                'executionError': False,
+                'timeOut': True,
+                'timeOutAt':timeoutAt,
+                'output' : '',
+                'testcasePassed' : f"{timeoutAt}/{testcase_len}",
+                'testcase' : testcases[timeoutAt],
+                'errors': time_out_testcase,
+                'dateTimestr' : datetime.now().isoformat()
+            }
             submission.save()
             return Response({   
                 'status': "Rejected",
@@ -189,7 +201,18 @@ class SubmissionsView(viewsets.ViewSet):
         
         if result.returncode != 0:
             submission.status = Submissions.Status.REJECTED
-            submission.description = result.stderr
+            submission.details = {
+                'status': "Rejected",
+                'inValidTestCase' : False,
+                'executionError' : True,
+                'timeOut': False,
+                'timeOutAt' : None, 
+                'testcasePassed' : f"0/{testcase_len}",
+                'testcase': testcases[0],
+                'output' : "",
+                'errors':result.stderr,
+                'dateTimestr' : datetime.now().isoformat()
+            }
             submission.save()
             return Response({
                     'status': "Rejected",
@@ -210,7 +233,17 @@ class SubmissionsView(viewsets.ViewSet):
             output,expectedOutput = outputs.split(" ")
             if output != expectedOutput:
                 submission.status = Submissions.Status.REJECTED
-                submission.description = "Failed to match the testcase result "
+                submission.details = {
+                    'status': "Rejected",
+                    'inValidTestCase' : False,
+                    'timeOut' : False,
+                    'timeOutAt' : None,
+                    'testcasePassed' : f"{index}/{testcase_len}",
+                    'testcase': testcases[index],
+                    'output' : f"{output} {expectedOutput}",
+                    'error': '',
+                    'dateTimestr' : datetime.now().isoformat()
+                }
                 submission.save()
                 return Response({
                     'status': "Rejected",
@@ -224,7 +257,17 @@ class SubmissionsView(viewsets.ViewSet):
                     'dateTimestr' : datetime.now().isoformat()
                 },status=status.HTTP_200_OK)
         submission.status = Submissions.Status.ACCEPTED
-        submission.description = "Accepted"
+        submission.details = {
+            'status':"Accepted",
+            'inValidTestCase' : False,
+            'executionError' : False,
+            'timeOut' : False,
+            'timeOutAt' : None,
+            'testcase': None,
+            'testcasePassed' : f"{testcase_len}/{testcase_len}",
+            'errors':'',
+            'dateTimestr' : datetime.now().isoformat()
+            }
         submission.save()
         return Response({
             'status':"Accepted",

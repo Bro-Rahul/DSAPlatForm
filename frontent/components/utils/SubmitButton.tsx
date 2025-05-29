@@ -8,6 +8,7 @@ import animationData from "@/public/animations/loading.json";
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import useProblem from '@/store/useProblem';
+import { mutate } from 'swr'
 
 
 const SubmitCodeButton: React.FC<{
@@ -33,6 +34,7 @@ const SubmitCodeButton: React.FC<{
                 lang: selectedLang,
 
             });
+            mutate("/submissions")
             onToggle(response.status);
             displaySubmitResults(response.status,{
                 dateTimestr : response.dateTimestr,
@@ -42,7 +44,9 @@ const SubmitCodeButton: React.FC<{
                 timeOut : response.timeOut,
                 timeOutAt : response.timeOutAt,
                 error : response.errors,
-                executionError : response.executionError
+                executionError : response.executionError,
+                code : config[slug].starterCode[selectedLang],
+                lang : selectedLang
             });
         } catch (err) {
             console.log(err);

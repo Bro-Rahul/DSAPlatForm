@@ -1,6 +1,4 @@
-import { Button } from "../ui/button"
-import Image from "next/image"
-import { icons } from "@/constants/icons"
+import {Editor} from "@monaco-editor/react"
 import useProblem from "@/store/useProblem"
 import { getFormatedDateString } from "@/util"
 import { decodeTestCases } from "@/lib/utils"
@@ -40,10 +38,7 @@ const RejectionResult = () => {
                     <p className='font-bold text-2xl text-[rgba(244,63,94,.9)]'>Wrong Answer <span className='text-sm font-bold text-gray-500 '>{submissionResult?.payload.totalPassed} testcases passed</span></p>
                     <span>submitted at {formatedDate}</span>
                 </div>
-                <Button className='bg-zinc-700 cursor-pointer text-white hover:bg-zinc-600'>
-                    <Image src={icons.editorailIcon} alt='editorail' width={20} height={20} />
-                    Editorial
-                </Button>
+               
             </div>
             <div className='flex flex-col gap-2'>
                 <p className='font-normal text-zinc-400'>Input</p>
@@ -57,8 +52,20 @@ const RejectionResult = () => {
                 {content}
             </div>
             <div>
-                <p className='font-normal text-zinc-400'>Code : Java</p>
-                <p>code here with monaco editor </p>
+                <p className='font-normal text-zinc-400'>Code : {submissionResult?.payload.lang}</p>
+                <Editor
+                    language={submissionResult?.payload.lang}
+                    className="w-full"
+                    height={400}
+                    theme="vs-dark"
+                    defaultValue={submissionResult?.payload.code}
+                    options={{
+                        readOnly : true,
+                        minimap : {
+                            enabled : false,
+                        }
+                    }}
+                />
             </div>
         </div>
     )

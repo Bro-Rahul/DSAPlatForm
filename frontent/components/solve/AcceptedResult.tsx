@@ -3,19 +3,12 @@ import Image from "next/image"
 import { Button } from "../ui/button"
 import { icons } from "@/constants/icons"
 import useProblem from "@/store/useProblem"
-import { useParams } from "next/navigation"
-import useSandBox from "@/store/useSandBox"
+import { Editor } from '@monaco-editor/react'
 import { getFormatedDateString } from "@/util"
 
 const AcceptedResult = () => {
     const session = useSession();
     const { data } = useProblem();
-    const {config} = useSandBox();
-    const {slug} = useParams<{slug:string}>();
-    const selectedLang = config[slug].selectedLang
-    const code = config[slug].starterCode[selectedLang];
-
-
     const { submissionResult } = data;
     const { data: userData } = session;
 
@@ -44,7 +37,19 @@ const AcceptedResult = () => {
             </div>
             <div>
                 <p className='font-normal text-zinc-400'>Code : Java</p>
-                <p className="text-white">{code}</p>
+                <Editor
+                    language={submissionResult?.payload.lang}
+                    value={submissionResult?.payload.code}
+                    height={400}
+                    className="w-full"
+                    theme="vs-dark"
+                    options={{
+                        readOnly: true,
+                        minimap : {
+                            enabled : false
+                        }
+                    }}
+                />
             </div>
         </div>
     )

@@ -7,17 +7,26 @@ import { UpdateProblemResponseType } from '@/types/response'
 import useProblem, { ToggleTabType } from '@/store/useProblem'
 import AcceptedResult from './AcceptedResult'
 import RejectionResult from './RejectedResult'
+import { useSession } from 'next-auth/react'
+import { useParams, useRouter } from 'next/navigation'
+import useSWR from 'swr'
+import { getUserSubmissions } from '@/http/general/submissionHttp'
 
 const ProblemTabs: React.FC<{
     problem: UpdateProblemResponseType
 }> = ({ problem }) => {
     const { data, onToggle } = useProblem();
+    const { data: UserData } = useSession();
+    const { slug } = useParams<{ slug: string }>()
+    const { data:SubmissionHistory, error, isLoading } = useSWR(UserData?.user.access ? '/submissions' : null, () => getUserSubmissions(slug, UserData!.user.access),{
+        onSuccess : data=> data.sort((a,b)=>b.id - a.id)
+    });
     const { tab, submissionResult } = data;
     let content;
-    if(submissionResult?.statue == "Accepted"){
-        content = <AcceptedResult/>
-    }else if(submissionResult?.statue == "Rejected"){
-        content = <RejectionResult/>
+    if (submissionResult?.statue == "Accepted") {
+        content = <AcceptedResult />
+    } else if (submissionResult?.statue == "Rejected") {
+        content = <RejectionResult />
     }
     return (
         <Tabs value={tab} onValueChange={e => onToggle(e! as ToggleTabType)} className='overflow-y-scroll custom-scrollbar w-full'>
@@ -33,7 +42,12 @@ const ProblemTabs: React.FC<{
                 <ProblemAbouts problem={problem} />
             </TabsContent>
             <TabsContent value="Submissions">
-                <AllSubmissions />
+                <AllSubmissions 
+                    error={error}
+                    isLoading={isLoading}
+                    isLogin={!!UserData?.user.access}
+                    submissionHistory={SubmissionHistory}
+                />
             </TabsContent>
             {submissionResult?.statue && <TabsContent value={submissionResult.statue}>
                 {content}
