@@ -10,17 +10,21 @@ const options: NextAuthOptions = {
         async jwt({ token, user, account, profile }) {
             if (account?.provider === "google" && profile) {
                 const response = await socialLogin({
-                    email: profile.email!,
-                    username: profile.name!,
+                    email: user.email!,
+                    username: user.name!,
                     providers: "G",
+                    password : user.id,
+                    image : user.image
                 }, "google");
 
                 token.user = response;
             } else if (account?.provider === "github" && profile) {
                 const response = await socialLogin({
-                    email: profile.email!,
-                    username: profile.name!,
+                    email: user.email!,
+                    username: user.name!,
                     providers: "GH",
+                    image : user.image,
+                    password : user.id
                 }, "github");
 
                 token.user = response;
@@ -36,6 +40,9 @@ const options: NextAuthOptions = {
             session.user = token.user;
             return session;
         },
+    },
+    session : {
+        maxAge : 60*60*24*7
     },
     providers: [
         GitHubProvider({

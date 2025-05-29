@@ -16,14 +16,11 @@ class Users(AbstractUser):
         max_length=150,
         unique=False,
     )
-    avatar = models.ImageField(
-        upload_to="media/profile",
-        null=True,
-        blank=True
-    )
+    
     email = models.EmailField(
         unique=True
     )
+    avatar = models.CharField(null=True,blank=True) # path of the image file weather it is url or stored image assets
 
     providers = models.CharField(
         choices=Providers.choices,

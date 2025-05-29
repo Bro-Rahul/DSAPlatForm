@@ -17,6 +17,8 @@ import addWhiteIcons from "@/public/icons/addWhite.png"
 import terminalIcons from "@/public/icons/terminal.png"
 import resultsIcons from "@/public/icons/results.png"
 import trashIcons from "@/public/icons/trash.png"
+import dummyProfileIcon from "@/public/icons/dummyProfileicon.png"
+import editorailIcon from "@/public/icons/editorail.png"
 
 
 export const SVG = {
@@ -41,5 +43,7 @@ export const icons = {
     addWhiteIcons,
     terminalIcons,
     resultsIcons,
-    trashIcons
+    trashIcons,
+    dummyProfileIcon,
+    editorailIcon
 }

@@ -4,6 +4,7 @@ import ProblemAbouts from '@/components/solve/ProblemAbouts'
 import SandBox from '@/components/solve/SandBox'
 import { decodeTestCases } from '@/lib/utils'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import SubmissionResult from '@/components/solve/SubmissionResult'
 
 
 const SolveProblem: React.FC<{
@@ -24,7 +25,7 @@ const SolveProblem: React.FC<{
           <ProblemAbouts problem={problem} />
         </TabsContent>
         <TabsContent value="Submissions">
-          Change your password here.
+          <SubmissionResult/>
         </TabsContent>
         <TabsContent value="Solutions">
           Change your password here.
