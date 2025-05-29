@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { icons } from '@/constants/icons'
 import useTestCaseProvider from '@/hook/useTestCaseProvider'
 import TestResult from './TestResult'
+import useProblem from '@/store/useProblem'
 
 
 const DisplayTest: React.FC<{

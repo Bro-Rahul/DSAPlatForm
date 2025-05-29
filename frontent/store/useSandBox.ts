@@ -13,7 +13,7 @@ type SandBoxStoreType = {
 }
 
 const initialState: SandBoxManagerType = {
-    selectedLang: "cpp",
+    selectedLang: "java",
     starterCode: { cpp: "", java: "", javascript: "", python: "" },
     testcases: []
 }

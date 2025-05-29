@@ -105,7 +105,6 @@ const TestCasePassResults: React.FC<{
                   {got}
                 </p>
               </div>
-              {/* Expected and Got values */}
               <div className="px-3 mt-2">
                 <p className="font-semibold">Expected Output</p>
                 <p className="bg-transparent w-full outline-none text-green-400">

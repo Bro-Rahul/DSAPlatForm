@@ -4,10 +4,10 @@ import { postSubmitCode } from '@/http/general/submissionHttp';
 import { LanguageSupportedType } from '@/types/store';
 import Lottie from "lottie-react";
 import useSandBox from '@/store/useSandBox';
-import useTestCaseProvider from '@/hook/useTestCaseProvider';
 import animationData from "@/public/animations/loading.json";
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import useProblem from '@/store/useProblem';
 
 
 const SubmitCodeButton: React.FC<{
@@ -15,7 +15,7 @@ const SubmitCodeButton: React.FC<{
     selectedLang: keyof LanguageSupportedType,
 
 }> = ({ selectedLang, slug }) => {
-    const { updateTestCaseResults, handleToggle } = useTestCaseProvider();
+    const {displaySubmitResults,onToggle} = useProblem();
     const { config } = useSandBox();
     const [loading, setLoading] = useState<boolean>(false);
     const {data} = useSession();
@@ -31,9 +31,19 @@ const SubmitCodeButton: React.FC<{
             const response = await postSubmitCode(slug,data!.user.access ,{
                 code: config[slug].starterCode[selectedLang],
                 lang: selectedLang,
+
             });
-            handleToggle("testresult")
-            updateTestCaseResults(response);
+            onToggle(response.status);
+            displaySubmitResults(response.status,{
+                dateTimestr : response.dateTimestr,
+                outputs : response.output,
+                testcase : response.testcase,
+                totalPassed : response.testcasePassed,
+                timeOut : response.timeOut,
+                timeOutAt : response.timeOutAt,
+                error : response.errors,
+                executionError : response.executionError
+            });
         } catch (err) {
             console.log(err);
         } finally {

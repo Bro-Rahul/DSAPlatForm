@@ -10,17 +10,18 @@ from testcaseValidators.main import validators_func
 from problems.models import Problems
 from submissions.models import Submissions
 
+from datetime import datetime
 import uuid
 import subprocess
 
 class SubmissionsView(viewsets.ViewSet):
     lookup_field = 'slug'
     
-    def get_permissions(self):
+    """ def get_permissions(self):
         if self.action in ["submit_code"]:
             self.permission_classes = [IsAuthenticated]
         return super().get_permissions()
-
+ """
     @action(detail=True,methods=["POST",],url_path='run-code')
     def run_code(self,request,slug:str=None):
         serializer = RunCodeValidator(data=request.data)
@@ -112,7 +113,7 @@ class SubmissionsView(viewsets.ViewSet):
     def submit_code(self,request,slug=None):
         serializer = SubmitCodeValidator(data=request.data)
         try:
-            obj = Problems.objects.values('testcases','id','solution_codes').get(slug=slug)
+            obj = Problems.objects.get(slug=slug)
         except Exception as e:
             return Response({
                 'info':str(e)},
@@ -126,13 +127,33 @@ class SubmissionsView(viewsets.ViewSet):
         
         lang = serializer.validated_data.get('lang',None)
         code = serializer.validated_data.get('code',None)
-        complete_code = f"{obj['solution_codes'][lang]}\n{code}"
+        complete_code = f"{obj.solution_codes[lang]}\n{code}"
         container_name = f"temp_container_{uuid.uuid4().hex}"
-        testcases:List[str] = obj['testcases'].split("\n")[:-1]
+        testcases:List[str] = obj.testcases.split("\n")
+        validations = validators_func(slug=slug.replace("-","_"),testcases=testcases)
+        testcase_len = len(testcases)
+
+        if not validations['valid']:
+            return Response({
+                'status' : "Rejected",
+                'inValidTestCase' : True,
+                'executionError' : False,
+                'timeOut' : False,
+                'timeOutAt' : None,
+                'errors':validations,
+                'dateTimestr' : datetime.now().isoformat()
+                },status=status.HTTP_200_OK)
+        
+        submission = Submissions(
+            user = request.user,
+            problem = obj,
+            submission_code = code,
+            submission_lang = lang,            
+        )
 
         try:
             result = subprocess.run(
-                ['docker','run','--rm','--name',container_name,lang,complete_code,obj['testcases']],
+                ['docker','run','--rm','--name',container_name,lang,complete_code,obj.testcases],
                 text=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
@@ -145,37 +166,42 @@ class SubmissionsView(viewsets.ViewSet):
                 stderr=subprocess.PIPE,
                 text=True
             )
-            timeoutAt = len(result.stdout.split("\n"))
+            timeoutAt = len(result.stdout.split("\n"))-1
             time_out_testcase = testcases[timeoutAt]
             subprocess.run([
                 'docker', 'rm', '-f', container_name
                 ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            submission.status = Submissions.Status.REJECTED
+            submission.description = "Time Limit Exists"
+            submission.save()
             return Response({   
-                'allPass': False,
+                'status': "Rejected",
                 'inValidTestCase': False,
                 'executionError': False,
                 'timeOut': True,
                 'timeOutAt':timeoutAt,
+                'output' : '',
+                'testcasePassed' : f"{timeoutAt}/{testcase_len}",
+                'testcase' : testcases[timeoutAt],
                 'errors': time_out_testcase,
-                'result': [],                
+                'dateTimestr' : datetime.now().isoformat()
             },status=status.HTTP_200_OK)
-        """ submissions = Submissions(
-            problem=obj['id'],
-            user=request.user.id,
-            submission_code=code,
-            submission_lang = lang
-        ) """
+        
         if result.returncode != 0:
-            """ submissions.status = Submissions.Status.REJECTED
-            submissions.description = result.stderr
-            submissions.save() """
+            submission.status = Submissions.Status.REJECTED
+            submission.description = result.stderr
+            submission.save()
             return Response({
-                    'allPass': False,
+                    'status': "Rejected",
                     'inValidTestCase' : False,
-                    'timeOut': False,
                     'executionError' : True,
+                    'timeOut': False,
+                    'timeOutAt' : None, 
+                    'testcasePassed' : f"0/{testcase_len}",
+                    'testcase': testcases[0],
+                    'output' : "",
                     'errors':result.stderr,
-                    'result' : []
+                    'dateTimestr' : datetime.now().isoformat()
                     },status=status.HTTP_200_OK)
 
         execution_results: List[str] = result.stdout.split("\n")[:-1]
@@ -183,22 +209,31 @@ class SubmissionsView(viewsets.ViewSet):
         for index, outputs in enumerate(execution_results):
             output,expectedOutput = outputs.split(" ")
             if output != expectedOutput:
-                """ submissions.status = Submissions.Status.REJECTED
-                submissions.description = f"Failed on testcase {testcases[index]} got {output} expected {expectedOutput}"
-                submissions.save() """
+                submission.status = Submissions.Status.REJECTED
+                submission.description = "Failed to match the testcase result "
+                submission.save()
                 return Response({
-                    'allPass': False,
-                    'testcase': index+1,
-                    'expected': expectedOutput,
-                    'got': output
+                    'status': "Rejected",
+                    'inValidTestCase' : False,
+                    'timeOut' : False,
+                    'timeOutAt' : None,
+                    'testcasePassed' : f"{index}/{testcase_len}",
+                    'testcase': testcases[index],
+                    'output' : f"{output} {expectedOutput}",
+                    'error': '',
+                    'dateTimestr' : datetime.now().isoformat()
                 },status=status.HTTP_200_OK)
-        """ submissions.status = Submissions.Status.ACCEPTED
-        submissions.save() """
+        submission.status = Submissions.Status.ACCEPTED
+        submission.description = "Accepted"
+        submission.save()
         return Response({
-            'allPass':True,
+            'status':"Accepted",
             'inValidTestCase' : False,
             'executionError' : False,
             'timeOut' : False,
+            'timeOutAt' : None,
+            'testcase': None,
+            'testcasePassed' : f"{testcase_len}/{testcase_len}",
             'errors':'',
-            'result' : execution_results
+            'dateTimestr' : datetime.now().isoformat()
             },status=status.HTTP_200_OK)

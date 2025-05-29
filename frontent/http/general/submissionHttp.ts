@@ -1,5 +1,6 @@
 import { LanguageSupportedType } from "@/types/store";
 import { generalApi } from "..";
+import { SubmitResponseType } from "@/types/httpTypes";
 
 type RunCodeType = {
     lang : keyof LanguageSupportedType,
@@ -23,7 +24,7 @@ export async function postRunCode(slug:string,payload:RunCodeType) {
 
 }
 
-export async function postSubmitCode(slug:string,token:string,payload:SubmitCodeType) {
+export async function postSubmitCode(slug:string,token:string,payload:SubmitCodeType):Promise<SubmitResponseType> {
     try{
         const response = await generalApi.post(`submissions/${slug}/submit-code/`,payload,{
             headers :{
