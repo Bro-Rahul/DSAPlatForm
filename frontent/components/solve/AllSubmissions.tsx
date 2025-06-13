@@ -28,9 +28,9 @@ const AllSubmissions:React.FC<{
         ))
     }
     return (
-        <div className='flex flex-col w-full bg-zinc-800 h-[100%]'>
+        <ol className='w-full bg-zinc-800 h-full space-y-2'>
             {content}
-        </div>
+        </ol>
     )
 }
 

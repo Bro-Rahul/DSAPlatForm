@@ -19,11 +19,40 @@ import resultsIcons from "@/public/icons/results.png"
 import trashIcons from "@/public/icons/trash.png"
 import dummyProfileIcon from "@/public/icons/dummyProfileicon.png"
 import editorailIcon from "@/public/icons/editorail.png"
+import hightlightsvg from "@/public/svg/hightlight.svg" 
+import boldsvg from "@/public/svg/bold.svg"
+import italicsvg from "@/public/svg/italic.svg"
+import codesvg from "@/public/svg/code.svg"
+import quotesvg from "@/public/svg/quote.svg"
+import orlderlistsvg from "@/public/svg/orderlist.svg"
+import unorlderlistsvg from "@/public/svg/unorderlist.svg"
+import dividersvg from "@/public/svg/divider.svg"
+import imagesvg from "@/public/svg/image.svg"
+import linksvg from "@/public/svg/link.svg"
+import complexitysvg from "@/public/svg/sum.svg"
+import mixedCodesvg from "@/public/svg/mix-codes.svg"
+import codeBlocksvg from "@/public/svg/codeblock.svg"
+
+
+
 
 
 export const SVG = {
     next,
-    vercel
+    vercel,
+    hightlightsvg,
+    codesvg,
+    imagesvg,
+    linksvg,
+    italicsvg,
+    quotesvg,
+    complexitysvg,
+    dividersvg,
+    unorlderlistsvg,
+    orlderlistsvg,
+    boldsvg,
+    mixedCodesvg,
+    codeBlocksvg
 }
 
 export const icons = {

@@ -1,4 +1,4 @@
-import {Editor} from "@monaco-editor/react"
+import { Editor } from "@monaco-editor/react"
 import useProblem from "@/store/useProblem"
 import { getFormatedDateString } from "@/util"
 import { decodeTestCases } from "@/lib/utils"
@@ -38,7 +38,7 @@ const RejectionResult = () => {
                     <p className='font-bold text-2xl text-[rgba(244,63,94,.9)]'>Wrong Answer <span className='text-sm font-bold text-gray-500 '>{submissionResult?.payload.totalPassed} testcases passed</span></p>
                     <span>submitted at {formatedDate}</span>
                 </div>
-               
+
             </div>
             <div className='flex flex-col gap-2'>
                 <p className='font-normal text-zinc-400'>Input</p>
@@ -52,7 +52,7 @@ const RejectionResult = () => {
                 {content}
             </div>
             <div>
-                <p className='font-normal text-zinc-400'>Code : {submissionResult?.payload.lang}</p>
+                <p className='font-normal text-zinc-400 capitalize'>Code : {submissionResult?.payload.lang}</p>
                 <Editor
                     language={submissionResult?.payload.lang}
                     className="w-full"
@@ -60,10 +60,13 @@ const RejectionResult = () => {
                     theme="vs-dark"
                     defaultValue={submissionResult?.payload.code}
                     options={{
-                        readOnly : true,
-                        minimap : {
-                            enabled : false,
-                        }
+                        readOnly: true,
+                        minimap: {
+                            enabled: false
+                        },
+                        domReadOnly: true,
+                        folding: false,
+                        wordWrap: "on",
                     }}
                 />
             </div>

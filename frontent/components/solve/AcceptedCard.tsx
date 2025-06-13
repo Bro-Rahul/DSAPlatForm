@@ -21,11 +21,11 @@ const AcceptedCard: React.FC<{
         })
     }
     return (
-        <section className='flex flex-col w-full p-2'>
-            <div onClick={handleClick} className='flex items-center bg-[rgba(74,222,128,0.3)] rounded-xl px-4 py-1 text-white cursor-pointer'>
-                <p>Accepted {result?.details.testcasePassed} passed<br /> {getFormatedDateString(result.details.dateTimestr)}</p>
+        <li className='flex flex-col w-full p-2 odd:bg-zinc-700/50'>
+            <div onClick={handleClick} className='flex items-center rounded-xl px-4 py-1 text-white cursor-pointer'>
+                <p className="text-zinc-300"><span className="font-bold text-green-600 text-lg">Accepted </span>{result?.details.testcasePassed} passed<br /> <span className="text-sm text-stone-300">{getFormatedDateString(result.details.dateTimestr)}</span></p>
             </div>
-        </section>
+        </li>
     )
 }
 

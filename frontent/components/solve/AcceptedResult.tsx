@@ -5,10 +5,13 @@ import { icons } from "@/constants/icons"
 import useProblem from "@/store/useProblem"
 import { Editor } from '@monaco-editor/react'
 import { getFormatedDateString } from "@/util"
+import Link from "next/link"
+import { useParams } from "next/navigation"
 
 const AcceptedResult = () => {
     const session = useSession();
     const { data } = useProblem();
+    const {slug} = useParams<{slug:string}>();
     const { submissionResult } = data;
     const { data: userData } = session;
 
@@ -30,13 +33,15 @@ const AcceptedResult = () => {
                         <span className='text-sm font-light'>{userData?.user.username} submitted at {formatedDate}</span>
                     </div>
                 </div>
-                <Button className='bg-zinc-700 cursor-pointer text-white hover:bg-zinc-600'>
+                <Link href={`/general/${slug}/submit-solution`}>
+                    <Button className='cursor-pointer text-white bg-green-700 hover:bg-green-800'>
                     <Image src={icons.editorailIcon} alt='editorail' width={20} height={20} />
-                    Solution
+                    Share
                 </Button>
+                </Link>
             </div>
             <div>
-                <p className='font-normal text-zinc-400'>Code : Java</p>
+                <p className='font-normal text-zinc-400 capitalize'>Code : {submissionResult?.payload.lang}</p>
                 <Editor
                     language={submissionResult?.payload.lang}
                     value={submissionResult?.payload.code}
@@ -47,7 +52,10 @@ const AcceptedResult = () => {
                         readOnly: true,
                         minimap : {
                             enabled : false
-                        }
+                        },
+                        domReadOnly : true,
+                        folding : false,
+                        wordWrap: "on",
                     }}
                 />
             </div>

@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django_extensions',
     "users",
     "problems",
+    "solutions",
     "submissions"
 ]
 
@@ -131,6 +132,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+MEDIA_ROOT = os.path.join(BASE_DIR , 'media')
+MEDIA_URL = 'v1/assets/'
+
 
 AUTH_USER_MODEL = "users.Users"
 

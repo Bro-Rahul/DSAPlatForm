@@ -169,3 +169,10 @@ body{
 .mdx-content{
   @apply bg-zinc-800
 }
+
+.solution-mdx ol{
+  list-style: decimal;
+}
+.solution-mdx ul{
+  list-style: disc;
+}
