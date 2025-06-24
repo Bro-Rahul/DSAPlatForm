@@ -12,13 +12,13 @@ class SubmissionsViewSet(viewsets.ViewSet):
     lookup_field = 'slug'
     permission_classes = []
     
-    """ def get_permissions(self):
+    def get_permissions(self):
         if self.action in ['retrieve',]:
             self.permission_classes = [IsAuthenticated,]
-        return super().get_permissions() """
+        return super().get_permissions()
     
 
     def retrieve(self, request, slug=None):
-        submissions = Submissions.objects.defer('user','problem').filter(problem__slug=slug,user__id=3).values('id','submission_code','submission_lang','status','created_at',"details")
+        submissions = Submissions.objects.defer('user','problem').filter(problem__slug=slug,user__id=request.user.id).values('id','submission_code','submission_lang','status','created_at',"details")
         serializer = SubmissionSerializer(submissions,many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
