@@ -23,7 +23,8 @@ const AllSubmissions:React.FC<{
             >Login</Button>
         </div>
     } else if (!error && !isLoading) {
-        content = submissionHistory?.map((history, index) => (
+        
+        content = submissionHistory?.length ===0? <p className="text-center pt-5 capitalize">Please submit atleast one Solution!</p>: submissionHistory?.map((history, index) => (
             history.status === "accepted" ? <AcceptedCard result={history} key={index} /> : <RejectedCard result={history} key={index} />
         ))
     }
