@@ -4,16 +4,17 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 from ..serializers.CommentSerializer import CommentSerializer
-from ..models import Comments
+from ..models import Comments,LikeDislike
 from problems.models import Problems
 from ..permissions.CommentOwner import CommentOwner
 
 from django.shortcuts import get_object_or_404
 from django.http import Http404
-from django.db.models import Q
+from django.db.models import Q,Count
 
 
 class CommentView(viewsets.ViewSet):
+    
 
     def get_permissions(self):
         if self.action in ["create","create_subcomment"]:
@@ -23,8 +24,12 @@ class CommentView(viewsets.ViewSet):
         return super().get_permissions()
     
     def list(self,request):
-        data = Comments.objects.all()
-        serializer = CommentSerializer(data,many=True)
+        user = request.user.pk
+        data = Comments.objects.prefetch_related("votes").annotate(
+            likes = Count("votes__isLiked",filter=Q(votes__isLiked=True)),
+            dislikes = Count("votes__isLiked",filter=Q(votes__isLiked=False)),
+        )
+        serializer = CommentSerializer(data,many=True,context={"user_id":request.user.pk})
         return Response(serializer.data,status=status.HTTP_200_OK)
 
     def create(self,request):
@@ -85,19 +90,9 @@ class CommentView(viewsets.ViewSet):
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         else:
-            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-        
+            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST) 
 
-class ProblemAndCommentView(viewsets.ViewSet):
 
-    @action(methods=["GET"],detail=True,url_path="comments")
-    def get_problem_comment(self,request,pk=None):
-        try:
-            obj = get_object_or_404(Problems,slug=pk)
-        except Http404 as e:
-            return Response({'info':"No Such Problem Exists!"},status=status.HTTP_400_BAD_REQUEST)
-        comments = CommentSerializer(Comments.objects.filter(Q(problem=obj) & Q(subcomment_id=None)),many=True)
-        return Response(comments.data,status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 def get_problem_comment(request, slug=None):
@@ -107,10 +102,15 @@ def get_problem_comment(request, slug=None):
     except Http404:
         return Response({'info': "No Such Problem Exists!"}, status=status.HTTP_400_BAD_REQUEST)
 
-    comments = CommentSerializer(
-        Comments.objects.filter(Q(problem=obj) & Q(subcomment_id=None)),
-        many=True
-    )
+    data = Comments.objects\
+                .filter(
+                    Q(problem=obj) & Q(subcomment_id=None))\
+                .prefetch_related("votes")\
+                .annotate(
+                    likes = Count("votes__isLiked",filter=Q(votes__isLiked=True)),
+                    dislikes = Count("votes__isLiked",filter=Q(votes__isLiked=False)),
+                )
+    comments = CommentSerializer(data,many=True)
     return Response(comments.data, status=status.HTTP_200_OK)
 
 
@@ -124,7 +124,14 @@ def get_comment_subcomments(request, slug=None,pk=None):
         return Response({'info': "No Such Problem Or Comment Exists!"}, status=status.HTTP_400_BAD_REQUEST)
 
     comments = CommentSerializer(
-        Comments.objects.filter(Q(problem=problem) & Q(subcomment_id=comment)),
+        Comments.objects\
+                    .filter(
+                        Q(problem=problem) & Q(subcomment_id=comment))\
+                    .prefetch_related("votes")\
+                    .annotate(
+                        likes = Count("votes__isLiked",filter=Q(votes__isLiked=True)),
+                        dislikes = Count("votes__isLiked",filter=Q(votes__isLiked=False)),
+                    ),
         many=True
     )
     return Response(comments.data, status=status.HTTP_200_OK)

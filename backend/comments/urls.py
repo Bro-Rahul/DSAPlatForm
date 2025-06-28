@@ -1,11 +1,12 @@
 from django.urls import path,include
 from rest_framework.routers import DefaultRouter
-from .views.comment_view import CommentView,ProblemAndCommentView,get_problem_comment,get_comment_subcomments
+from .views.comment_view import CommentView,get_problem_comment,get_comment_subcomments
+from .views.votes_view import VotingView
 
 router = DefaultRouter()
 
 router.register("comments",CommentView,basename="comment-view")
-#router.register("problem",ProblemAndCommentView,basename="problem-view")
+router.register("comment/vote",VotingView,basename="comment-voting")
 
 urlpatterns = [
     path("",include(router.urls)),

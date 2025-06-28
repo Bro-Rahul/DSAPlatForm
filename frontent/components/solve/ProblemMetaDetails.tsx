@@ -3,6 +3,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '..
 import Image from 'next/image'
 import { icons } from "@/constants/icons"
 import { Badge } from '../ui/badge'
+import ProblemComments from './ProblemComments'
 
 const ProblemMetaDetails: React.FC<{
     tags: string[],
@@ -40,8 +41,7 @@ const ProblemMetaDetails: React.FC<{
                         </p>
                     </AccordionTrigger>
                     <AccordionContent className='flex w-full gap-2 flex-wrap'>
-                        Create A comment box and display the comments of users <br/>
-                        Here Are Some Comments To Show 
+                        <ProblemComments/>
                     </AccordionContent>
                 </AccordionItem>
             </Accordion>

@@ -1,7 +1,6 @@
 from django.db import models
 from problems.models import Problems
 from users.models import Users
-from datetime import datetime
 
 class Comments(models.Model):
 
@@ -42,3 +41,16 @@ class Comments(models.Model):
 
     def __str__(self):
         return f"{self.comment} on {self.problem.title} by {self.user.username}"
+    
+
+class LikeDislike(models.Model):
+
+    user = models.ForeignKey(Users, on_delete=models.CASCADE,related_name="comment")
+    comment = models.ForeignKey(Comments, on_delete=models.CASCADE, related_name='votes')
+    isLiked = models.BooleanField(null=True,blank=True)
+
+    class Meta:
+        unique_together = ('user', 'comment')  
+
+    def __str__(self):
+        return f'{self.user.username} voted {"Like" if self.isLiked == 1 else "Dislike"}'
