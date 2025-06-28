@@ -21,7 +21,7 @@ class ProblemView(ViewSet):
 
     @method_decorator(cache_page(60*60*2,key_prefix="problems"))
     def list(self,request):
-        serializer = ProblemListSerializer(self.get_queryset(),fields = ['title','level','slug','tags',"hints"],many=True)
+        serializer = ProblemListSerializer(self.get_queryset(),fields = ['title','level','slug','tags',"hints","id"],many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
     @method_decorator(cache_page(60*60*2))

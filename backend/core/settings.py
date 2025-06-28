@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     "users",
     "problems",
     "solutions",
-    "submissions"
+    "submissions",
+    "comments"
 ]
 
 MIDDLEWARE = [

@@ -27,4 +27,5 @@ urlpatterns = [
     path("v1/",include("problems.urls")),
     path("v1/",include("submissions.urls")),
     path("v1/",include("solutions.urls")),
+    path("v1/",include("comments.urls")),
 ] + debug_toolbar_urls() + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
