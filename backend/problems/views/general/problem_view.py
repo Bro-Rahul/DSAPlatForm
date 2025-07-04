@@ -15,6 +15,11 @@ class ProblemView(ViewSet):
     model = Problems
     lookup_field = 'slug'
 
+    def get_permissions(self):
+        if self.action in ["get_user_submissions",]:
+            pass
+        return super().get_permissions()
+
     def get_queryset(self):
         return Problems.objects.prefetch_related("tags")
     
@@ -31,5 +36,36 @@ class ProblemView(ViewSet):
         serializer  = ProblemListSerializer(
             data,
             fields = ['tags','id','difficulty','hints','description','title','testcases','starter_codes']
+        )
+        return Response(serializer.data,status=status.HTTP_200_OK)
+
+    @action(methods=["GET",],detail=True,url_path="description")
+    def get_problem_description(self,request,slug=None):
+        queryset = Problems.objects.prefetch_related("tags",)
+        data = get_object_or_404(queryset,slug=slug)
+        serializer  = ProblemListSerializer(
+            data,
+            fields = ['tags','id','difficulty','hints','description','title','slug']
+        )
+        return Response(serializer.data,status=status.HTTP_200_OK)
+    
+
+    @action(methods=["GET",],detail=True,url_path="editors-codes")
+    def get_user_submissions(self,request,slug=None):
+        data = get_object_or_404(Problems,slug=slug)
+        serializer  = ProblemListSerializer(
+            data,
+            fields = ['starter_codes',"testcases"],
+        )
+        return Response(serializer.data,status=status.HTTP_200_OK)
+    
+
+    @action(methods=["GET",],detail=True,url_path="solutions")
+    def get_problem_solutions(self,request,slug=None):
+        queryset = Problems.objects.prefetch_related("tags",)
+        data = get_object_or_404(queryset,slug=slug)
+        serializer  = ProblemListSerializer(
+            data,
+            fields = ['starter_codes',"testcases"]
         )
         return Response(serializer.data,status=status.HTTP_200_OK)

@@ -20,8 +20,10 @@ class ProblemListSerializer(DynamicFieldsModelSerializer):
 
     def to_representation(self, instance:Problems):
         obj = super().to_representation(instance)
-        testcases = ""
-        test1,test2 = instance.testcases.split("\n")[:2]
-        testcases = f"{test1}\n{test2}"
-        obj['testcases'] = testcases
+        if obj['testcases']:
+            testcases = ""
+            test1,test2 = instance.testcases.split("\n")[:2]
+            testcases = f"{test1}\n{test2}"
+            obj['testcases'] = testcases
+            return obj 
         return obj
