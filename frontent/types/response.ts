@@ -13,3 +13,13 @@ export type UpdateProblemResponseType = {
     solution_codes: LanguageSupportedType,
     inputParameters: ParameterType[],
 }
+
+export type ProblemDescriptionResponseType = {
+    id: number,
+    tags: string[]
+    difficulty: string,
+    title: string,
+    description: string,
+    slug: string,
+    hints: string
+}

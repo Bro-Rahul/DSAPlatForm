@@ -2,7 +2,7 @@
 import React from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
 import AllSubmissions from './AllSubmissions'
-import ProblemAbouts from './ProblemAbouts'
+import ProblemAbouts from './ProblemDescription'
 import { UpdateProblemResponseType } from '@/types/response'
 import useProblem, { ToggleTabType } from '@/store/useProblem'
 import AcceptedResult from './AcceptedResult'

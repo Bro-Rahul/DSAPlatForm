@@ -1,13 +1,15 @@
-import { UpdateProblemResponseType } from '@/types/response'
 import React from 'react'
 import { Badge } from '@/components/ui/badge'
 import MdxDescription from './MdxDescription'
 import ProblemMetaDetails from './ProblemMetaDetails'
+import { getProblemDescription } from '@/http/general/problemHttp'
 
 
-const ProblemAbouts: React.FC<{
-    problem: UpdateProblemResponseType
-}> = ({ problem }) => {
+const ProblemDescription: React.FC<{
+    slug:string
+}> = async ({ slug }) => {
+    const problem = await getProblemDescription(slug);
+    
     return (
         <div className='flex flex-col w-full px-5 gap-8 bg-zinc-800'>
             <div className='flex justify-between w-full'>
@@ -25,4 +27,4 @@ const ProblemAbouts: React.FC<{
     )
 }
 
-export default ProblemAbouts
+export default ProblemDescription

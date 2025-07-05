@@ -4,22 +4,28 @@ import {
     ResizablePanel,
     ResizablePanelGroup,
 } from "@/components/ui/resizable"
+import ProblemLayout from '@/components/layouts/ProblemLayout';
 
-const ProblemLayoutPage: React.FC<{
+const layout: React.FC<{
     children: React.ReactNode,
-    Editor: React.ReactNode,
-    problemDetails: React.ReactNode
-}> = ({ Editor, children, problemDetails }) => {
+    params : Promise<{slug:string}>
+}> = async ({ children,params }) => {
+    const {slug} = await params
     return (
         <div className='flex flex-col w-full h-[100vh] bg-zinc-800'>
-            {children}
             <ResizablePanelGroup direction="horizontal">
-                <ResizablePanel>{problemDetails}</ResizablePanel>
+                <ResizablePanel defaultSize={100} minSize={20}>
+                    {children}
+                </ResizablePanel>
                 <ResizableHandle />
-                <ResizablePanel>{Editor}</ResizablePanel>
+                <ResizablePanel defaultSize={100} minSize={0}>
+                    <div style={{ width: '30%', background: '#f0f0f0', padding: '1rem', color: 'black' }}>
+                        <h2>Right Side (Static)</h2>
+                        <p>This doesn't change with route.</p>
+                    </div>
+                </ResizablePanel>
             </ResizablePanelGroup>
         </div>
     )
 }
-
-export default ProblemLayoutPage
+export default layout;
