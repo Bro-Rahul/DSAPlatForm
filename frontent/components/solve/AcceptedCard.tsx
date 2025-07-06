@@ -1,3 +1,5 @@
+"use client"
+
 import useProblem from "@/store/useProblem";
 import { submissionsHistoryType } from "@/types/submissions";
 import { getFormatedDateString } from "@/util";

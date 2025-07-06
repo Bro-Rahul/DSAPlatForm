@@ -1,3 +1,5 @@
+"use client"
+
 import { submissionsHistoryType } from "@/types/submissions";
 import React from "react";
 import { getFormatedDateString } from "@/util";

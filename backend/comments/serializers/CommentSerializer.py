@@ -1,17 +1,17 @@
 from rest_framework import serializers
 from ..models import Comments,LikeDislike
 from problems.models import Problems
-from django.db.models import Q,Count
 
 class CommentSerializer(serializers.ModelSerializer):
     problem = serializers.PrimaryKeyRelatedField(queryset=Problems.objects.all())
     likes = serializers.IntegerField(read_only=True)
     dislikes = serializers.IntegerField(read_only=True)
     user_vote = serializers.SerializerMethodField()
+    username = serializers.StringRelatedField(source='user')
 
     class Meta:
         model = Comments
-        fields = ['id','user','comment','problem','comment_type','subcomment_id','created_at',"likes","dislikes","user_vote"]
+        fields = ['id','user','comment','problem','comment_type','subcomment_id','created_at',"likes","dislikes","user_vote",'username']
 
 
     def get_user_vote(self,obj):

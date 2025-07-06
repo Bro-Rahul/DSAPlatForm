@@ -4,13 +4,17 @@ import {
     ResizablePanel,
     ResizablePanelGroup,
 } from "@/components/ui/resizable"
-import ProblemLayout from '@/components/layouts/ProblemLayout';
+import SandBox from '@/components/solve/SandBox'
+import { getProblemEditorCodesAndTestCases } from '@/http/general/problemHttp'
+import { decodeTestCases } from '@/lib/utils'
 
 const layout: React.FC<{
     children: React.ReactNode,
-    params : Promise<{slug:string}>
-}> = async ({ children,params }) => {
-    const {slug} = await params
+    params: Promise<{ slug: string }>
+}> = async ({ children, params }) => {
+    const { slug } = await params
+    const response = await getProblemEditorCodesAndTestCases(slug);
+    const { formatedTestCase } = decodeTestCases(response.testcases)
     return (
         <div className='flex flex-col w-full h-[100vh] bg-zinc-800'>
             <ResizablePanelGroup direction="horizontal">
@@ -19,9 +23,12 @@ const layout: React.FC<{
                 </ResizablePanel>
                 <ResizableHandle />
                 <ResizablePanel defaultSize={100} minSize={0}>
-                    <div style={{ width: '30%', background: '#f0f0f0', padding: '1rem', color: 'black' }}>
-                        <h2>Right Side (Static)</h2>
-                        <p>This doesn't change with route.</p>
+                    <div className='grid grid-cols-1 w-full h-[100vh]'>
+                        <SandBox
+                            starterCodes={response.starter_codes}
+                            testcases={formatedTestCase}
+                            slug={slug}
+                        />
                     </div>
                 </ResizablePanel>
             </ResizablePanelGroup>

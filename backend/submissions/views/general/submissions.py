@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from submissions.serializers.SubmissionSerializer import SubmissionSerializer
 
-from django.shortcuts import get_list_or_404
+from django.db.models import F
 
 class SubmissionsViewSet(viewsets.ViewSet):
     lookup_field = 'slug'
@@ -19,6 +19,10 @@ class SubmissionsViewSet(viewsets.ViewSet):
     
 
     def retrieve(self, request, slug=None):
-        submissions = Submissions.objects.defer('user','problem').filter(problem__slug=slug,user__id=request.user.id).values('id','submission_code','submission_lang','status','created_at',"details")
+        submissions = Submissions.objects\
+            .defer('user','problem')\
+            .filter(problem__slug=slug,user__id=request.user.id)\
+            .values('id','submission_code','submission_lang','status','created_at',"details")\
+            .order_by(F('created_at').desc())
         serializer = SubmissionSerializer(submissions,many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)

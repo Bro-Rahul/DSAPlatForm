@@ -1,6 +1,7 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 import ProblemDescription from '@/components/solve/ProblemDescription';
+import AllSubmissions from '@/components/solve/AllSubmissions';
 
 const page: React.FC<{
   params: Promise<{ sections: string; slug: string }>;
@@ -18,6 +19,8 @@ const page: React.FC<{
   switch (sections) {
     case "description":
       return <ProblemDescription slug={slug} />
+    case "submissions":
+      return <AllSubmissions slug={slug}/> 
   }
 
   return (
