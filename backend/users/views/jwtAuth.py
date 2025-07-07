@@ -58,6 +58,7 @@ class LoginWithSocialAccounts(viewsets.ViewSet):
             user.avatar = serializer.validated_data.get('image')
             user.set_password(serializer.validated_data.get('password')) 
             user.providers = Users.Providers.GOOGLE
+            user.username = serializer.validated_data.get('username')
             user.save()
             data = create_token(user=user)
             return Response(data,status=status.HTTP_200_OK)
@@ -88,6 +89,7 @@ class LoginWithSocialAccounts(viewsets.ViewSet):
             user.avatar = serializer.validated_data.get('image')
             user.set_password(serializer.validated_data.get('password')) 
             user.providers = Users.Providers.GITHUB
+            user.username = serializer.validated_data.get('username')
             user.save()
             data = create_token(user=user)
             return Response(data,status=status.HTTP_200_OK)

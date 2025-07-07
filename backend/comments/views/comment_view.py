@@ -10,7 +10,7 @@ from ..permissions.CommentOwner import CommentOwner
 
 from django.shortcuts import get_object_or_404
 from django.http import Http404
-from django.db.models import Q,Count
+from django.db.models import Q,Count,OuterRef,Subquery,BooleanField,CharField,Case,When,Value
 
 
 class CommentView(viewsets.ViewSet):
@@ -25,7 +25,7 @@ class CommentView(viewsets.ViewSet):
     
     def list(self,request):
         user = request.user.pk
-        data = Comments.objects.prefetch_related("votes").annotate(
+        data = Comments.objects.select_related('user').prefetch_related("votes").annotate(
             likes = Count("votes__isLiked",filter=Q(votes__isLiked=True)),
             dislikes = Count("votes__isLiked",filter=Q(votes__isLiked=False)),
         )
@@ -96,42 +96,95 @@ class CommentView(viewsets.ViewSet):
 
 @api_view(['GET'])
 def get_problem_comment(request, slug=None):
-    print("Hi there")
     try:
         obj = get_object_or_404(Problems, slug=slug)
     except Http404:
         return Response({'info': "No Such Problem Exists!"}, status=status.HTTP_400_BAD_REQUEST)
 
-    data = Comments.objects\
-                .filter(
-                    Q(problem=obj) & Q(subcomment_id=None))\
-                .prefetch_related("votes")\
-                .annotate(
-                    likes = Count("votes__isLiked",filter=Q(votes__isLiked=True)),
-                    dislikes = Count("votes__isLiked",filter=Q(votes__isLiked=False)),
-                )
-    comments = CommentSerializer(data,many=True)
-    return Response(comments.data, status=status.HTTP_200_OK)
+    if request.user.pk:
+        subquery = LikeDislike\
+                    .objects\
+                    .filter(
+                        comment = OuterRef('pk'),
+                        user_id=request.user.pk
+                    ).values('isLiked')[:1]
+        data = Comments.objects\
+                    .filter(Q(problem=obj) & Q(subcomment_id=None))\
+                    .select_related('user')\
+                    .prefetch_related("votes")\
+                    .annotate(
+                        raw_vote = Subquery(subquery,output_field=BooleanField()),
+                        user_vote = Case(
+                            When(raw_vote=True,then=Value("Liked")),
+                            When(raw_vote=False,then=Value("DisLike")),
+                            default=Value("Not Voted"),
+                            output_field=CharField()
+                        ),
+                        likes = Count("votes__isLiked",filter=Q(votes__isLiked=True)),
+                        dislikes = Count("votes__isLiked",filter=Q(votes__isLiked=False)),
+                    )
+        comments = CommentSerializer(data,many=True)
+        
+        return Response(comments.data, status=status.HTTP_200_OK)
+    else:
+        data = Comments.objects\
+                    .filter(
+                        Q(problem=obj) & Q(subcomment_id=None))\
+                    .select_related('user')\
+                    .prefetch_related("votes")\
+                    .annotate(
+                        user_vote=Value("Not Voted"), 
+                        likes = Count("votes__isLiked",filter=Q(votes__isLiked=True)),
+                        dislikes = Count("votes__isLiked",filter=Q(votes__isLiked=False)),
+                    )
+        comments = CommentSerializer(data,many=True)
+        return Response(comments.data, status=status.HTTP_200_OK)
 
 
 
 @api_view(['GET'])
 def get_comment_subcomments(request, slug=None,pk=None):
     try:
-        problem = get_object_or_404(Problems, slug=slug)
+        problem = get_object_or_404(Problems,slug=slug)
         comment = get_object_or_404(Comments,pk=pk)
     except Http404:
         return Response({'info': "No Such Problem Or Comment Exists!"}, status=status.HTTP_400_BAD_REQUEST)
 
-    comments = CommentSerializer(
-        Comments.objects\
+    if request.user.pk:
+        subquery = LikeDislike\
+                    .objects\
                     .filter(
-                        Q(problem=problem) & Q(subcomment_id=comment))\
+                        comment = OuterRef('pk'),
+                        user_id=request.user.pk
+                    ).values('isLiked')[:1]
+        data = Comments.objects\
+                    .filter(Q(problem=problem) & Q(subcomment_id=comment))\
+                    .select_related('user')\
                     .prefetch_related("votes")\
                     .annotate(
+                        raw_vote = Subquery(subquery,output_field=BooleanField()),
+                        user_vote = Case(
+                            When(raw_vote=True,then=Value("Liked")),
+                            When(raw_vote=False,then=Value("DisLike")),
+                            default=Value("Not Voted"),
+                            output_field=CharField()
+                        ),
                         likes = Count("votes__isLiked",filter=Q(votes__isLiked=True)),
                         dislikes = Count("votes__isLiked",filter=Q(votes__isLiked=False)),
-                    ),
-        many=True
-    )
-    return Response(comments.data, status=status.HTTP_200_OK)
+                    )
+        comments = CommentSerializer(data,many=True)
+        
+        return Response(comments.data, status=status.HTTP_200_OK)
+    else:
+        data = Comments.objects\
+                    .filter(
+                        Q(problem=problem) & Q(subcomment_id=comment))\
+                    .select_related('user')\
+                    .prefetch_related("votes")\
+                    .annotate(
+                        user_vote=Value("Not Voted"), 
+                        likes = Count("votes__isLiked",filter=Q(votes__isLiked=True)),
+                        dislikes = Count("votes__isLiked",filter=Q(votes__isLiked=False)),
+                    )
+        comments = CommentSerializer(data,many=True)
+        return Response(comments.data, status=status.HTTP_200_OK)

@@ -6,19 +6,15 @@ class CommentSerializer(serializers.ModelSerializer):
     problem = serializers.PrimaryKeyRelatedField(queryset=Problems.objects.all())
     likes = serializers.IntegerField(read_only=True)
     dislikes = serializers.IntegerField(read_only=True)
-    user_vote = serializers.SerializerMethodField()
+    user_vote = serializers.StringRelatedField()
     username = serializers.StringRelatedField(source='user')
+    avatar = serializers.SerializerMethodField()
 
     class Meta:
         model = Comments
-        fields = ['id','user','comment','problem','comment_type','subcomment_id','created_at',"likes","dislikes","user_vote",'username']
+        fields = ['id','user','comment','problem','comment_type','subcomment_id','created_at',"likes","dislikes","user_vote",'username','avatar','user_vote']
 
 
-    def get_user_vote(self,obj):
-        user_id = self.context.get("user_id",None)
-        if not user_id: 
-            return None
-        result = LikeDislike.objects.filter(user=user_id).first()
-        if result:
-            return result.isLiked
-        return None
+    
+    def get_avatar(self,obj):
+        return obj.user.avatar
