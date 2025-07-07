@@ -40,4 +40,6 @@ export type ProblemCommentResponseType = {
     likes: number,
     dislikes: number,
     user_vote: null|string
+    username : string,
+    avatar : null|string
 }

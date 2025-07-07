@@ -7,8 +7,9 @@ import ProblemComments from './ProblemComments'
 
 const ProblemMetaDetails: React.FC<{
     tags: string[],
-    hints: string[]
-}> = ({ hints, tags }) => {
+    hints: string[],
+    problemId : number,
+}> = ({ hints, tags,problemId }) => {
     return (
         <div className='w-full flex flex-col'>
             <Accordion type="multiple">
@@ -41,7 +42,7 @@ const ProblemMetaDetails: React.FC<{
                         </p>
                     </AccordionTrigger>
                     <AccordionContent className='flex w-full gap-2 flex-wrap'>
-                        <ProblemComments/>
+                        <ProblemComments problemId={problemId}/>
                     </AccordionContent>
                 </AccordionItem>
             </Accordion>
