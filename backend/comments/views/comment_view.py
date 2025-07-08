@@ -116,7 +116,7 @@ def get_problem_comment(request, slug=None):
                         raw_vote = Subquery(subquery,output_field=BooleanField()),
                         user_vote = Case(
                             When(raw_vote=True,then=Value("Liked")),
-                            When(raw_vote=False,then=Value("DisLike")),
+                            When(raw_vote=False,then=Value("DisLiked")),
                             default=Value("Not Voted"),
                             output_field=CharField()
                         ),
@@ -165,7 +165,7 @@ def get_comment_subcomments(request, slug=None,pk=None):
                         raw_vote = Subquery(subquery,output_field=BooleanField()),
                         user_vote = Case(
                             When(raw_vote=True,then=Value("Liked")),
-                            When(raw_vote=False,then=Value("DisLike")),
+                            When(raw_vote=False,then=Value("DisLiked")),
                             default=Value("Not Voted"),
                             output_field=CharField()
                         ),

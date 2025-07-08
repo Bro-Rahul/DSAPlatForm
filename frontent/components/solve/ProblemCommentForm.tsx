@@ -22,7 +22,7 @@ const ProblemCommentForm: React.FC<{
 }> = ({ problemId, mutate }) => {
     const { data: session } = useSession();
 
-    const { handleSubmit, control, formState: { isValid } } = useForm<CommentValidatorType>({
+    const { handleSubmit, control, formState: { isValid },reset } = useForm<CommentValidatorType>({
         defaultValues: {
             comment: '',
         },
@@ -34,6 +34,7 @@ const ProblemCommentForm: React.FC<{
             try{
                 await postProblemComment({ comment: data.comment, problem: problemId }, session.user.access);
                 mutate();
+                reset()
             }catch(err:any){
                 toast.custom(
                 <Toast
@@ -47,6 +48,7 @@ const ProblemCommentForm: React.FC<{
             })
             }
         } else {
+            reset()
             toast.custom(
                 <Toast
                     icon={icons.crossIcon}

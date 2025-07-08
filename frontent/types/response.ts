@@ -39,7 +39,7 @@ export type ProblemCommentResponseType = {
     created_at: string,
     likes: number,
     dislikes: number,
-    user_vote: null|string
+    user_vote: "Liked"|"DisLiked"|"Not Voted"
     username : string,
     avatar : null|string
 }

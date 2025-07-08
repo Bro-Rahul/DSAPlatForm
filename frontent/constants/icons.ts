@@ -32,6 +32,10 @@ import linksvg from "@/public/svg/link.svg"
 import complexitysvg from "@/public/svg/sum.svg"
 import mixedCodesvg from "@/public/svg/mix-codes.svg"
 import codeBlocksvg from "@/public/svg/codeblock.svg"
+import likeIcon from "@/public/icons/thumbs-up.png"
+import likeFillIcon from "@/public/icons/thumbs-upfill.png"
+import dislikeIcon from "@/public/icons/thumbs-down.png"
+import dislikeFillIcon from "@/public/icons/thumbs-downfill.png"
 
 
 
@@ -74,5 +78,9 @@ export const icons = {
     resultsIcons,
     trashIcons,
     dummyProfileIcon,
-    editorailIcon
+    editorailIcon,
+    likeFillIcon,
+    likeIcon,
+    dislikeIcon,
+    dislikeFillIcon
 }

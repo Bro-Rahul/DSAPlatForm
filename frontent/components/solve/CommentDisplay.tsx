@@ -5,6 +5,9 @@ import React, { useState } from 'react'
 import { KeyedMutator } from 'swr'
 import ReplyComment from './ReplyComment'
 import DisplayCommentReplies from './DisplayCommentReplies'
+import Image from 'next/image'
+import { icons } from '@/constants/icons'
+import LikeDislikeBtn from './LikeDislikeBtn'
 
 const CommentDisplay: React.FC<{
     comment: ProblemCommentResponseType
@@ -12,7 +15,7 @@ const CommentDisplay: React.FC<{
 }> = ({ comment, mutate }) => {
     const { data: session } = useSession();
     const [replyBoxId, setReplyBoxId] = useState<number | null>(null);
-    const [showReply,setShowReply] = useState<number|null>(null);
+    const [showReply, setShowReply] = useState<number | null>(null);
 
     const handleDelete = async (commentId: number) => {
         await deleteProblemComment(commentId, session!.user.access);
@@ -47,11 +50,7 @@ const CommentDisplay: React.FC<{
 
             <p className="text-gray-100 mb-3 leading-relaxed">{comment.comment}</p>
 
-            <div className="flex items-center space-x-6 text-sm text-gray-400">
-                <span>👍 {comment.likes}</span>
-                <span>👎 {comment.dislikes}</span>
-            </div>
-
+            <LikeDislikeBtn comment={comment} mutate={mutate}/>
             {/* Action Buttons */}
             <div className="mt-4 flex space-x-6 text-sm">
                 <button
@@ -64,7 +63,7 @@ const CommentDisplay: React.FC<{
                 </button>
 
                 <button
-                    onClick={() =>setShowReply(comment.id)}
+                    onClick={() => setShowReply(comment.id)}
                     className="text-green-400 hover:text-green-300 transition"
                 >
                     See Replies
@@ -80,7 +79,7 @@ const CommentDisplay: React.FC<{
                 )}
             </div>
             {replyBoxId === comment.id && <ReplyComment commentId={comment.id} mutate={mutate} />}
-            {showReply && <DisplayCommentReplies commentId={showReply}/>}
+            {showReply && <DisplayCommentReplies commentId={showReply} />}
         </li>
     )
 }

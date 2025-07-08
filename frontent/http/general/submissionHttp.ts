@@ -1,7 +1,7 @@
 import { LanguageSupportedType } from "@/types/store";
 import { generalApi } from "..";
 import { SubmitResponseType } from "@/types/httpTypes";
-import { submissionsHistoryType } from "@/types/submissions";
+import { SubmissionsHistoryType } from "@/types/submissions";
 
 type RunCodeType = {
     lang : keyof LanguageSupportedType,
@@ -39,9 +39,9 @@ export async function postSubmitCode(slug:string,token:string,payload:SubmitCode
     }
 }
 
-export async function getUserSubmissions(slug:string,token:string):Promise<submissionsHistoryType[]> {
+export async function getUserSubmissions(slug:string,token:string):Promise<SubmissionsHistoryType[]> {
     try{
-        const response = await generalApi.get(`submissions-results/${slug}`,{
+        const response = await generalApi.get(`submissions-results/${slug}/user-submissions/`,{
             headers : {
                 Authorization : `Bearer ${token}`
             }
@@ -52,3 +52,14 @@ export async function getUserSubmissions(slug:string,token:string):Promise<submi
         throw Error(error);
     }
 }
+
+export async function getSubmissionResultById(submissionId:string):Promise<SubmissionsHistoryType> {
+    try{
+        const response = await generalApi.get(`submissions-results/${submissionId}/`)
+        return response.data;
+    }catch(err:any){
+        const error = err.response.data.detail || err.info || err.message
+        throw Error(error);
+    }
+}
+

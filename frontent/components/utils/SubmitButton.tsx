@@ -8,7 +8,6 @@ import animationData from "@/public/animations/loading.json";
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import useProblem from '@/store/useProblem';
-import { mutate } from 'swr'
 
 
 const SubmitCodeButton: React.FC<{
@@ -16,7 +15,7 @@ const SubmitCodeButton: React.FC<{
     selectedLang: keyof LanguageSupportedType,
 
 }> = ({ selectedLang, slug }) => {
-    const {displaySubmitResults,onToggle} = useProblem();
+    const {displaySubmitResults} = useProblem();
     const { config } = useSandBox();
     const [loading, setLoading] = useState<boolean>(false);
     const {data} = useSession();
@@ -32,10 +31,7 @@ const SubmitCodeButton: React.FC<{
             const response = await postSubmitCode(slug,data!.user.access ,{
                 code: config[slug].starterCode[selectedLang],
                 lang: selectedLang,
-
-            });
-            mutate("/submissions")
-            onToggle(response.status);
+            }); 
             displaySubmitResults(response.status,{
                 dateTimestr : response.dateTimestr,
                 outputs : response.output,
@@ -47,7 +43,8 @@ const SubmitCodeButton: React.FC<{
                 executionError : response.executionError,
                 code : config[slug].starterCode[selectedLang],
                 lang : selectedLang
-            });
+            }); 
+            router.push(`/general/${slug}/result`);
         } catch (err) {
             console.log(err);
         } finally {

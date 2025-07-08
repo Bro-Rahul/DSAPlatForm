@@ -1,15 +1,20 @@
 "use client"
 
-import { submissionsHistoryType } from "@/types/submissions";
+import { SubmissionsHistoryType } from "@/types/submissions";
 import React from "react";
 import { getFormatedDateString } from "@/util";
 import useProblem from "@/store/useProblem";
+import { useParams, useRouter } from "next/navigation";
 const RejectedCard:React.FC<{
-    result : submissionsHistoryType
+    result : SubmissionsHistoryType
 }> = ({result}) => {
     const {displaySubmitResults} = useProblem();
+    const {slug} = useParams<{slug:string}>()
+    const router = useRouter();
     const handleClick = ()=>{
+        router.push(`/problems/${slug}/result`)
         displaySubmitResults("Rejected",{
+            id : result.id,
             dateTimestr : result.details.dateTimestr,
             error : result.details.errors,
             executionError : result.details.executionError,

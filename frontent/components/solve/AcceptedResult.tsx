@@ -10,9 +10,8 @@ import { useParams } from "next/navigation"
 
 const AcceptedResult = () => {
     const session = useSession();
-    const { data } = useProblem();
+    const { data:{submissionResult} } = useProblem();
     const {slug} = useParams<{slug:string}>();
-    const { submissionResult } = data;
     const { data: userData } = session;
 
     const formatedDate = getFormatedDateString(submissionResult?.payload.dateTimestr!);
@@ -33,7 +32,7 @@ const AcceptedResult = () => {
                         <span className='text-sm font-light'>{userData?.user.username} submitted at {formatedDate}</span>
                     </div>
                 </div>
-                <Link href={`/general/${slug}/submit-solution`}>
+                <Link href={`/submit-solution/${submissionResult?.payload.id}/`}>
                     <Button className='cursor-pointer text-white bg-green-700 hover:bg-green-800'>
                     <Image src={icons.editorailIcon} alt='editorail' width={20} height={20} />
                     Share

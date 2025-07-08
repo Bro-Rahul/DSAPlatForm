@@ -15,7 +15,7 @@ const HomePage = async () => {
         <Image src={SVG.vercel} alt='icon' width={30} height={30} priority/>
         <ul className='flex justify-between gap-5'>
           <li className='cursor-pointer' ><Link href={'/admin'}>Admin</Link></li>
-          <li className='cursor-pointer'><Link href={'/general'}>General</Link></li>
+          <li className='cursor-pointer'><Link href={'/problems'}>General</Link></li>
           {session ? <LogoutButton /> :
             <li className='cursor-pointer'><Link href={'auth/login'}>Auth</Link></li>
           }

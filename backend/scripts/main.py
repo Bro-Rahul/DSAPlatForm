@@ -1,5 +1,6 @@
 from django.db.models import F, Q, Count, OuterRef, Subquery, Case, When, Value, BooleanField, CharField
 from comments.models import Comments, LikeDislike
+from submissions.models import Submissions
 
 def query():
     user_id = 3
@@ -26,5 +27,10 @@ def query():
     for item in data:
         print(f"Likes: {item.likes}, Dislikes: {item.dislike}, User Vote: {item.user_vote}, Comment: {item.comment}")
 
+def submission():
+    submissions = Submissions.objects.all()
+    for item in submissions:
+        print(f"id {item.pk}")
+
 def run():
-    query()
+    submission()

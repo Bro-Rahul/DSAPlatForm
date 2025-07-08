@@ -2,6 +2,7 @@ import { LanguageSupportedType } from "@/types/store"
 import {create} from "zustand"
 
 type ResultType = {
+    id:number,
     totalPassed : string,
     dateTimestr : string,
     testcase : string,
@@ -19,16 +20,13 @@ type SubmissionsResultType = {
     payload : ResultType
 }
 
-export type ToggleTabType = "description"|"Submissions"|"Solutions"|"Accepted" | "Rejected"
 
 type SolveProblemType = {
-    tab : ToggleTabType
     submissionResult : SubmissionsResultType|null,
 }
 
 type SubmissionManagementType = {
     data : SolveProblemType,
-    onToggle : (to:ToggleTabType)=>void,
     displaySubmitResults : (statue:"Accepted"|"Rejected",payload:ResultType)=>void
 }
 
@@ -37,21 +35,12 @@ const useProblem = create<SubmissionManagementType>()(
         data : {
             isSubmitted : null,
             submissionResult : null,
-            tab : "description"
         },
-        onToggle : (to)=>{
-            set((state)=>({
-                data : {
-                    ...state.data,
-                    tab : to
-                }
-            }))
-        },
+       
         displaySubmitResults : (statue,payload)=>{
             set((state)=>({
                 data : {
                     ...state.data,
-                    tab : statue,
                     submissionResult : {
                         statue,
                         payload : payload,

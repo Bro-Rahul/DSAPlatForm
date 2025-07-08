@@ -13,7 +13,11 @@ const DisplayCommentReplies:React.FC<{
   const {data,error,isLoading,mutate} = useSWR(`/${commentId}/subcomment`,()=>getProblemCommentSubComments(slug,commentId,session?.user.access))
   let content;
   if(data && !error){
-    content = data.map(comment=><CommentDisplay key={comment.id} comment={comment} mutate={mutate} />)
+    if(data.length === 0){
+      content = <p className='mt-2'>No Replies</p>
+    }else{
+      content = data.map(comment=><CommentDisplay key={comment.id} comment={comment} mutate={mutate} />)
+    }
   }else if(!data && error) {
     content = <p>{error}</p>
   }else{

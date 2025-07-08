@@ -6,7 +6,7 @@ const page:React.FC<{
   params : Promise<{slug:string}>
 }> = async ({params}) => {
   const {slug} = await params
-  redirect(`/general/${slug}/description`)
+  redirect(`/problems/${slug}/description`)
 }
 
 export default page

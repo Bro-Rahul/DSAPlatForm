@@ -30,7 +30,7 @@ export type SubmissionDetailType = {
 
 }
 
-export type submissionsHistoryType = {
+export type SubmissionsHistoryType = {
     id : number,
     submission_code : string,
     submission_lang : keyof LanguageSupportedType,

@@ -1,7 +1,6 @@
 import { ProblemCodesAndTestCaseResponseType, ProblemCommentResponseType, ProblemDescriptionResponseType, UpdateProblemResponseType } from "@/types/response";
 import { generalApi } from "..";
 import { ProblemList } from "@/types/problem";
-import { submissionsHistoryType } from "@/types/submissions";
 
 
 export async function getProblemList(): Promise<ProblemList[]> {
@@ -46,17 +45,4 @@ export async function getProblemEditorCodesAndTestCases(slug: string): Promise<P
     }
 }
 
-export async function getUserSubmissions(slug: string, token: string): Promise<submissionsHistoryType[]> {
-    try {
-        const response = await generalApi.get(`submissions-results/${slug}/`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        return response.data;
-    } catch (err: any) {
-        const error = err.response.info || err.response.detail || "Can't fetch the problem"
-        throw Error(error);
-    }
-}
 

@@ -1,37 +1,55 @@
+'use client';
+
+import useProblem from '@/store/useProblem';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import React from 'react';
 
-const ProblemLayout: React.FC<{
-  children: React.ReactNode;
-  problemSlug: string;
-  activeSection: string;
-}> = ({ problemSlug, activeSection, children }) => {
-  const navItems = [
+const ProblemTabs: React.FC<{
+  slug: string,
+  children: React.ReactNode
+}> = ({ children, slug }) => {
+  const pathname = usePathname();
+  const { data:{submissionResult} } = useProblem();
+
+  const activeTab = pathname.split('/').pop();
+  const tabs = [
     { label: 'Description', value: 'description' },
     { label: 'Submissions', value: 'submissions' },
     { label: 'Solutions', value: 'solutions' },
   ];
-
   return (
-    <section className="flex flex-col w-full h-[100vh] overflow-y-scroll gap-2 custom-scrollbar">
-      <nav className="flex flex-row w-full items-center gap-5 px-4 py-2 border-b border-zinc-700">
-        {navItems.map((item) => (
-          <Link
-            key={item.value}
-            href={`/general/${problemSlug}/${item.value}`}
-            className={`px-3 py-1 rounded-md transition-all duration-200
-              ${activeSection === item.value
-                ? 'bg-white text-black font-semibold'
-                : 'text-gray-400 hover:text-white hover:bg-zinc-700'
-              }`}
-          >
-            {item.label}
-          </Link>
-        ))}
+    <div className='flex flex-col w-full h-full gap-5'>
+      <nav className='flex flex-row w-full gap-5'>
+        {tabs.map((tab) => {
+          const isActive = activeTab === tab.value;
+          return (
+            <Link
+              key={tab.value}
+              href={`/problems/${slug}/${tab.value}`}
+              className={`px-4 py-2 rounded-md transition-all ${isActive
+                ? 'bg-zinc-600/50 text-white font-semibold'
+                : 'text-white'
+                }`}
+            >
+              {tab.label}
+            </Link>
+          );
+        })}
+        {submissionResult?.statue && <Link
+          key={submissionResult.statue}
+          href={`/problems/${slug}/result`}
+          className={`px-4 py-2 rounded-md transition-all ${activeTab === 'result'
+            ? 'bg-zinc-600/50 text-white font-semibold'
+            : 'text-white'
+            }`}
+        >
+          {submissionResult.statue}
+        </Link>}
       </nav>
       {children}
-    </section>
+    </div>
   );
 };
 
-export default ProblemLayout;
+export default ProblemTabs;

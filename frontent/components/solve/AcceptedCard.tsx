@@ -1,15 +1,21 @@
 "use client"
 
 import useProblem from "@/store/useProblem";
-import { submissionsHistoryType } from "@/types/submissions";
+import { SubmissionsHistoryType } from "@/types/submissions";
 import { getFormatedDateString } from "@/util";
+import { useParams, useRouter } from "next/navigation";
 import React from "react";
+
 const AcceptedCard: React.FC<{
-    result: submissionsHistoryType
+    result: SubmissionsHistoryType
 }> = ({ result }) => {
     const { displaySubmitResults} = useProblem();
+    const router = useRouter();
+    const {slug} = useParams<{slug:string}>()
     const handleClick = ()=>{
+        router.push(`/problems/${slug}/result`);
         displaySubmitResults("Accepted",{
+            id : result.id,
             dateTimestr : result.details.dateTimestr,
             error : result.details.errors,
             executionError : result.details.executionError,
@@ -20,7 +26,7 @@ const AcceptedCard: React.FC<{
             totalPassed : result.details.testcasePassed,
             code : result.submission_code,
             lang : result.submission_lang
-        })
+        });
     }
     return (
         <li className='flex flex-col w-full p-2 odd:bg-zinc-700/50'>

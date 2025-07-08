@@ -22,7 +22,7 @@ const ReplyComment: React.FC<{
 
 }> = ({ commentId, mutate }) => {
     const { data: session } = useSession();
-    const { control, handleSubmit,reset } = useForm<ReplyCommentType>({
+    const { control, handleSubmit, reset } = useForm<ReplyCommentType>({
         defaultValues: {
             comment: ''
         },
@@ -35,11 +35,15 @@ const ReplyComment: React.FC<{
                     icon={icons.crossIcon}
                     success={false}
                     text='Login first for comment!'
-                />)
+                />, {
+                position: 'bottom-right',
+                duration: 3000
+            })
+            reset()
+            return;
         }
-        console.log(data)
         try {
-            await postProblemCommentReply(commentId,data.comment,session!.user.access);
+            await postProblemCommentReply(commentId, data.comment, session!.user.access);
             mutate();
             reset();
         } catch (err: any) {
