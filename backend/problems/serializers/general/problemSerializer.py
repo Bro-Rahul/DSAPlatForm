@@ -7,6 +7,10 @@ class ProblemListSerializer(DynamicFieldsModelSerializer):
     tags = serializers.StringRelatedField(many=True)
     difficulty = serializers.SerializerMethodField()
     level = serializers.SerializerMethodField()
+    comments_total = serializers.IntegerField(read_only=True)
+    total_accepted = serializers.IntegerField(read_only=True)
+    total_submissions = serializers.IntegerField(read_only=True)
+
 
     class Meta:
         model = Problems

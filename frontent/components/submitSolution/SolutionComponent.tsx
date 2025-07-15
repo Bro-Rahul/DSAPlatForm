@@ -8,6 +8,7 @@ import React, { useState } from 'react'
 import commandsList from '@/constants/editorComponents';
 import { customAbcPlugin } from '@/util';
 import { SubmissionsHistoryType } from '@/types/submissions';
+import CodeHighlight from './CodeHighlight';
 
 const SolutionComponent:React.FC<{
     submissionData : SubmissionsHistoryType
@@ -19,27 +20,28 @@ const SolutionComponent:React.FC<{
     const str = md.render(value);
 
     return (
-        <div className='flex flex-col w-[70%] mx-auto bg-zinc-800/60 h-[100%]'>
+        <div className='flex flex-col w-[70%] mx-auto mt-5 bg-zinc-800/60 h-[100%]'>
             <div>
                 <Input
-                    placeholder='Enter your title'
+                    placeholder='Enter your title for Solution'
                 />
-                <div>
-                    <Button>Cancel</Button>
+                <div className='flex flex-row gap-2 justify-end'>
                     <Button>Submit</Button>
+                    <Button>Cancel</Button>
                 </div>
             </div>
-            <div className=''>
+            <div className='flex flex-row gap-2'>
                 <Button>+ Tag</Button>
             </div>
+            <CodeHighlight code={submissionData.submission_code}/>
 
-            <MDXEditor
+            {/* <MDXEditor
                 height={800}
                 value={value}
                 className='solution-mdx'
                 commands={commandsList}
                 onChange={e => setValue(e!)}
-            />
+            /> */}
         </div>
     )
 }

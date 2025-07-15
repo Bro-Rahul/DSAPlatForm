@@ -176,3 +176,17 @@ body{
 .solution-mdx ul{
   list-style: disc;
 }
+
+.editor-container {
+  background-color: #1e1e1e;
+  color: #f8f8f2;
+  padding: 1rem;
+  border-radius: 8px;
+  font-family: 'Fira Code', monospace;
+  overflow-x: auto;
+}
+
+.h1js{
+  color: black;
+  background-color: black;
+}

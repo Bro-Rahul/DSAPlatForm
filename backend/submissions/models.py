@@ -41,4 +41,4 @@ class Submissions(models.Model):
     details = models.JSONField(default=dict)
 
     def __str__(self):
-        return f"{self.problem.title} by {self.user.username}"
+        return f"{self.problem.title} by {self.user.username} status -> {self.status}"

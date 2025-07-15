@@ -5,10 +5,12 @@ from rest_framework import status
 
 from django.shortcuts import get_object_or_404
 from django.views.decorators.cache import cache_page
+from django.db.models import Count,Q,F
 from django.utils.decorators import method_decorator
 
 from problems.models import Problems
 from problems.serializers.general.problemSerializer import ProblemListSerializer
+from submissions.models import Submissions
 
 
 class ProblemView(ViewSet):
@@ -39,16 +41,29 @@ class ProblemView(ViewSet):
         )
         return Response(serializer.data,status=status.HTTP_200_OK)
 
-    @action(methods=["GET",],detail=True,url_path="description")
-    def get_problem_description(self,request,slug=None):
-        queryset = Problems.objects.prefetch_related("tags",)
-        data = get_object_or_404(queryset,slug=slug)
-        serializer  = ProblemListSerializer(
-            data,
-            fields = ['tags','id','difficulty','hints','description','title','slug']
+    @action(methods=["GET"], detail=True, url_path="description")
+    def get_problem_description(self, request, slug=None):
+        problem = get_object_or_404(
+            Problems.objects.prefetch_related("tags","comments","submissions"),
+            slug=slug
         )
-        return Response(serializer.data,status=status.HTTP_200_OK)
-    
+
+        comments_total = problem.comments.count()
+        total_accepted = problem.submissions.filter(status=Submissions.Status.ACCEPTED).count()
+        total_submissions = problem.submissions.count()
+
+        serializer = ProblemListSerializer(
+            problem,
+            fields=['tags','id','difficulty','hints','description','title','slug']
+        )
+        data = serializer.data
+        data["comments_total"] = comments_total
+        data["total_accepted"] = total_accepted
+        data["total_submissions"] = total_submissions
+
+        return Response(data, status=status.HTTP_200_OK)
+
+
 
     @action(methods=["GET",],detail=True,url_path="editors-codes")
     def get_user_submissions(self,request,slug=None):
