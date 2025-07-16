@@ -12,7 +12,7 @@ const ResultPage = () => {
 
   useEffect(() => {
     if (!submissionResult?.statue) {
-      router.replace(`/general/${slug}/description`)
+      router.replace(`/problems/${slug}/description`)
     }
   }, []);
   if(!submissionResult?.statue){

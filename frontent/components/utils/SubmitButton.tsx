@@ -33,6 +33,7 @@ const SubmitCodeButton: React.FC<{
                 lang: selectedLang,
             }); 
             displaySubmitResults(response.status,{
+                id :response.id,
                 dateTimestr : response.dateTimestr,
                 outputs : response.output,
                 testcase : response.testcase,
@@ -42,9 +43,9 @@ const SubmitCodeButton: React.FC<{
                 error : response.errors,
                 executionError : response.executionError,
                 code : config[slug].starterCode[selectedLang],
-                lang : selectedLang
+                lang : selectedLang,
             }); 
-            router.push(`/general/${slug}/result`);
+            router.push(`/problems/${slug}/result`);
         } catch (err) {
             console.log(err);
         } finally {

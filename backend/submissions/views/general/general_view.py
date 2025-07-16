@@ -270,6 +270,7 @@ class SubmissionsView(viewsets.ViewSet):
             }
         submission.save()
         return Response({
+            'id' : submission.pk,
             'status':"Accepted",
             'inValidTestCase' : False,
             'executionError' : False,

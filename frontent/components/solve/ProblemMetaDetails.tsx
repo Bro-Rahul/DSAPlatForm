@@ -8,8 +8,9 @@ import ProblemComments from './ProblemComments'
 const ProblemMetaDetails: React.FC<{
     tags: string[],
     hints: string[],
+    totalComments : number,
     problemId : number,
-}> = ({ hints, tags,problemId }) => {
+}> = ({ hints, tags,problemId,totalComments }) => {
     return (
         <div className='w-full flex flex-col'>
             <Accordion type="multiple">
@@ -38,7 +39,7 @@ const ProblemMetaDetails: React.FC<{
                 <AccordionItem value="comments">
                     <AccordionTrigger className='flex justify-between cursor-pointer'>
                         <p className='flex items-center gap-2 font-bold'>
-                            <Image src={icons.commentIcons} alt='tags' width={20} height={20} />Comments
+                            <Image src={icons.commentIcons} alt='tags' width={20} height={20} />Comments ({totalComments})
                         </p>
                     </AccordionTrigger>
                     <AccordionContent className='flex w-full gap-2 flex-wrap'>

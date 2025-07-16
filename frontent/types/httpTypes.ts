@@ -1,4 +1,5 @@
 export type SubmitResponseType = {
+    id : number,
     status: "Rejected"|"Accepted",
     inValidTestCase: boolean,
     executionError: boolean,

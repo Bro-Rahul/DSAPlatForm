@@ -21,7 +21,10 @@ export type ProblemDescriptionResponseType = {
     title: string,
     description: string,
     slug: string,
-    hints: string
+    hints: string,
+    comments_total: number,
+    total_accepted: number,
+    total_submissions: number
 }
 
 export type ProblemCodesAndTestCaseResponseType = {
