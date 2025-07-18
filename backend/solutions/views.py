@@ -7,10 +7,12 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Solutions
 from .validators.UploadImage import UploadImageValidator
 from .serializer.solutionSerializer import SolutionSerializer
+from problems.models import Problems
 
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from django.db.models import Count,Q
+from django.db.models import Count,F
+from django.db.models.functions import Lower
 from django.http import Http404
 
 from uuid import uuid4
@@ -38,40 +40,67 @@ class UploadImageView(APIView):
     
 class SolutionsView(viewsets.ViewSet):
     model = Solutions
+
+    lookup_field = 'slug'
     
     def get_permissions(self):
         if self.request.method == "POST":
             self.permission_classes = [IsAuthenticated,]
         return super().get_permissions()
 
-    def create(self,request):
-
-        return Response("create a new Solution",status=status.HTTP_200_OK)
-
-    def retrieve(self, request, pk=None):
+    def retrieve(self, request, slug=None):
         try:
-            obj = get_object_or_404(self.model,pk=pk)
-        except Http404 as e:
-            return Response({'info':'No such solution exists '},status=status.HTTP_400_BAD_REQUEST)
-        serializer = SolutionSerializer(obj)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+            pk = int(slug)
+            obj = get_object_or_404(Solutions,pk=pk)
+            serializer = SolutionSerializer(obj)
+            return Response(serializer.data,status=status.HTTP_200_OK)
+        except ValueError:
+            return Response(f"{slug} is a non-numeric string")
 
+    @action(methods=["POST",],detail=False,url_path="create")
+    def create_solution(self,request):
+        serializer = SolutionSerializer(data={
+            **request.data,
+            "user": request.user.pk
+        })
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'info':'success'},status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST) 
 
-    @action(methods=["GET",],detail=False,url_path="filter-by")
-    def solution_filter_by(self,request):
-        tags = request.query_params.getlist('tag')
-        solutions = Solutions.objects.filter(
-            tags__tag__in = tags
-        )
+    
+    @action(methods=["GET",],detail=True,url_path="get-solutions")
+    def problem_solutions(self,request,slug=None):
+        
+        solutions = Solutions.objects.prefetch_related("tags").filter(problem__slug=slug)
         serializer = SolutionSerializer(solutions,many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+        
+        lang =  solutions\
+                    .values("tags__tag")\
+                    .annotate(
+                        count = Count("pk"),
+                        lang = F("tags__tag"),
+                    )\
+                    .values("lang","count")
 
-    # this endpoint will return the all the tags that has been submitted 
-    # for this problem only by all users 
-    @action(methods=["GET",],detail=True,url_path="get-alltags")
-    def solution_filter_by(self,request,pk=None):
-        tags = Solutions.objects.filter(problem__slug=pk).values("tags").annotate(
-            total_sol = Count("pk")
-        )
-        serializer = SolutionSerializer(tags,many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK)
+        return Response({
+            "solutions": serializer.data,
+            "lang_count": lang,
+            "total_solutions" : solutions.count()
+        },status=status.HTTP_200_OK)
+    
+
+    @action(methods=["GET",], detail=True, url_path="filter-by")
+    def problem_solution_filter(self, request, slug=None):
+        tag_list = request.query_params.getlist("tags")
+
+        solutions = Solutions.objects\
+                    .annotate(
+                        tag_lower=Lower("tags__tag")
+                    ).filter(
+                        problem__slug=slug,
+                        tag_lower__in=tag_list
+                    ).distinct()
+
+        serializer = SolutionSerializer(solutions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

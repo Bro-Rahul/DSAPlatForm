@@ -1,6 +1,11 @@
-from django.db.models import F, Q, Count, OuterRef, Subquery, Case, When, Value, BooleanField, CharField
+from django.db.models import F, Q, Count, OuterRef,Sum, Subquery, Case, When, Value, BooleanField, CharField
+from django.db.models.functions import Concat
+from django.db import connection
 from comments.models import Comments, LikeDislike
 from submissions.models import Submissions
+from problems.models import Tags,Problems
+from pprint import pprint
+from solutions.models import Solutions
 
 def query():
     user_id = 3
@@ -32,5 +37,17 @@ def submission():
     for item in submissions:
         print(f"id {item.pk}")
 
+
+def get_solution_pertag():
+    problem = Problems.objects.get(slug='find-min')
+    tags = problem.solutions.values("tags__tag").annotate(
+        count = Count("pk"),
+        lang = F("tags__tag"),
+        formatted=Concat(F("tags__tag"), Value("-"),F("count"),output_field=CharField())
+    ).values("lang","count")
+    for item in tags:
+        print(f"{item} ")
+    
+
 def run():
-    submission()
+    get_solution_pertag()

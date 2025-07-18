@@ -29,7 +29,7 @@ class Solutions(models.Model):
                 on_delete=models.CASCADE
             )
     
-    solution_text = models.TextField()
+    solution_text = models.TextField(blank=False,null=False)
 
     def __str__(self):
         return f"{self.title} by ->{self.user.username}"
