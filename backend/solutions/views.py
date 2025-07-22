@@ -7,13 +7,11 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Solutions
 from .validators.UploadImage import UploadImageValidator
 from .serializer.solutionSerializer import SolutionSerializer
-from problems.models import Problems
 
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django.db.models import Count,F
 from django.db.models.functions import Lower
-from django.http import Http404
 
 from uuid import uuid4
 import os 
@@ -71,24 +69,28 @@ class SolutionsView(viewsets.ViewSet):
     
     @action(methods=["GET",],detail=True,url_path="get-solutions")
     def problem_solutions(self,request,slug=None):
-        
-        solutions = Solutions.objects.prefetch_related("tags").filter(problem__slug=slug)
-        serializer = SolutionSerializer(solutions,many=True)
-        
-        lang =  solutions\
-                    .values("tags__tag")\
-                    .annotate(
-                        count = Count("pk"),
-                        lang = F("tags__tag"),
-                    )\
-                    .values("lang","count")
+        solutions = Solutions.objects\
+                        .prefetch_related("tags")\
+                        .filter(problem__slug=slug)
 
+        serializer = SolutionSerializer(solutions,many=True)
+
+        return Response(serializer.data,status=status.HTTP_200_OK)
+
+
+    @action(methods=["GET",],detail=True,url_path="available-solutions-tags")
+    def get_available_tags_for_solutions(self,request,slug=None):
+        lang_count = Solutions.objects\
+                        .filter(problem__slug=slug)\
+                        .values("tags__tag")\
+                        .annotate(
+                            count = Count("pk"),
+                            tag = F("tags__tag")
+                        )\
+                        .values("tag","count")
         return Response({
-            "solutions": serializer.data,
-            "lang_count": lang,
-            "total_solutions" : solutions.count()
+            "tags": lang_count,
         },status=status.HTTP_200_OK)
-    
 
     @action(methods=["GET",], detail=True, url_path="filter-by")
     def problem_solution_filter(self, request, slug=None):

@@ -9,7 +9,6 @@ const SubmitSolutionPage:React.FC<{
   const response = await getSubmissionResultById(submissionId);
 
   return (
-   
     <SolutionComponent submissionData={response}/>
   )
 }

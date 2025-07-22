@@ -39,15 +39,19 @@ def submission():
 
 
 def get_solution_pertag():
-    problem = Problems.objects.get(slug='find-min')
-    tags = problem.solutions.values("tags__tag").annotate(
-        count = Count("pk"),
-        lang = F("tags__tag"),
-        formatted=Concat(F("tags__tag"), Value("-"),F("count"),output_field=CharField())
-    ).values("lang","count")
-    for item in tags:
-        print(f"{item} ")
-    
+
+    all_solution = Solutions.objects.filter(
+        problem=OuterRef("pk")
+    ).values("problem", "tags").annotate(
+        all_solutions = Count("problem")
+    ).values("all_solutions")
+
+    problems = Problems.objects.annotate(
+        all_solutions = Subquery(all_solution)
+    )
+
+    for x in problems:
+        print(f"{x.title} => {x.all_solutions}")
 
 def run():
     get_solution_pertag()
