@@ -24,7 +24,7 @@ const GeneralHomePage = async () => {
             <TableRow key={index}>
               <TableCell className="font-medium">{index + 1}</TableCell>
               <TableCell>
-                <Link href={`${`/problems/${problem.slug}`}`}>
+                <Link href={`${`/problems/${problem.slug}/description`}`}>
                   {problem.title}
                 </Link>
               </TableCell>

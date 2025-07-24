@@ -32,6 +32,7 @@ export type SubmissionDetailType = {
 
 export type SubmissionsHistoryType = {
     id : number,
+    problem : number,
     submission_code : string,
     submission_lang : keyof LanguageSupportedType,
     details : SubmissionDetailType,

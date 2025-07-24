@@ -6,4 +6,4 @@ class SubmissionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Submissions
-        exclude = ['user','problem']
+        exclude = ['user']

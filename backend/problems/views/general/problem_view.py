@@ -43,14 +43,17 @@ class ProblemView(ViewSet):
 
     @action(methods=["GET"], detail=True, url_path="description")
     def get_problem_description(self, request, slug=None):
-        problem = get_object_or_404(
-            Problems.objects.prefetch_related("tags","comments","submissions"),
-            slug=slug
-        )
-
+        problem = Problems.objects\
+                        .filter(slug=slug)\
+                        .prefetch_related("comments","submissions")\
+                        .first()
+        
+        if not problem:
+            return Response({'info':'No such problem existed'},status=status.HTTP_400_BAD_REQUEST)
+        
         comments_total = problem.comments.count()
         total_accepted = problem.submissions.filter(status=Submissions.Status.ACCEPTED).count()
-        total_submissions = problem.submissions.count()
+        total_submissions = problem.submissions.count() 
 
         serializer = ProblemListSerializer(
             problem,

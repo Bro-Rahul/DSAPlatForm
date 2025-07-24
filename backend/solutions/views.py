@@ -94,9 +94,15 @@ class SolutionsView(viewsets.ViewSet):
 
     @action(methods=["GET",], detail=True, url_path="filter-by")
     def problem_solution_filter(self, request, slug=None):
-        tag_list = request.query_params.getlist("tags")
+        tag_list = request.query_params.getlist("tags",None)
 
-        solutions = Solutions.objects\
+        if not tag_list:
+            solutions = Solutions.objects\
+                    .filter(
+                        problem__slug=slug,
+                    ).distinct()
+        else:
+            solutions = Solutions.objects\
                     .annotate(
                         tag_lower=Lower("tags__tag")
                     ).filter(
