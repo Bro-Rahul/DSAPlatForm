@@ -53,5 +53,12 @@ def get_solution_pertag():
     for x in problems:
         print(f"{x.title} => {x.all_solutions}")
 
+
+def lower_case_tags():
+    tags = Tags.objects.all()
+    for item in tags:
+        item.tag = item.tag.lower()
+        item.save()
+
 def run():
-    get_solution_pertag()
+    lower_case_tags()

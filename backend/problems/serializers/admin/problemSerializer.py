@@ -6,6 +6,8 @@ from users.models import Users
 from django.utils.text import slugify
 from ..utils.DynamicModelFieldSerializer import DynamicFieldsModelSerializer
 
+from typing import List 
+
 class ProblemListSerializer(DynamicFieldsModelSerializer):
     level = serializers.SerializerMethodField()
 
@@ -54,7 +56,7 @@ class ProblemCreateUpdateSerializer(serializers.ModelSerializer):
     
 
     def update(self, instance, validated_data):
-        tags = validated_data.pop("tags", None)
+        tags:List[str] = validated_data.pop("tags", None)
         level = validated_data.pop("level", None)
 
         with transaction.atomic():
@@ -67,7 +69,7 @@ class ProblemCreateUpdateSerializer(serializers.ModelSerializer):
             if tags is not None:
                 taglist = []
                 for tag in tags:
-                    tag_obj, _ = Tags.objects.get_or_create(tag=tag)
+                    tag_obj, _ = Tags.objects.get_or_create(tag=tag.lower())
                     taglist.append(tag_obj)
                 instance.tags.set(taglist)
 

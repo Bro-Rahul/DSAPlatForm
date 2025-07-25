@@ -41,9 +41,7 @@ class SubmissionsViewSet(viewsets.ViewSet):
     @action(methods=["GET",],detail=True,url_path="user-submissions")
     def get_submission_for_problem(self, request, slug=None):
         submissions = Submissions.objects\
-            .defer('user','problem')\
             .filter(problem__slug=slug,user__id=request.user.id)\
-            .values('id','submission_code','submission_lang','status','created_at',"details")\
             .order_by(F('created_at').desc())
         serializer = SubmissionSerializer(submissions,many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
