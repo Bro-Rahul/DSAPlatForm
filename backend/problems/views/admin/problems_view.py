@@ -26,7 +26,10 @@ class ProblemView(viewsets.ViewSet):
     def list(self,request):
         data = self.model.objects\
             .prefetch_related("tags")\
-            .filter(user=request.user.id)
+            .filter(
+                    user=request.user.id,
+                    ready_to_solve=False
+                )
         serializer = ProblemListSerializer(
             data,
             many=True,
@@ -36,10 +39,10 @@ class ProblemView(viewsets.ViewSet):
 
     def retrieve(self, request, slug=None):
         queryset = Problems.objects.prefetch_related("tags",)
-        data = get_object_or_404(queryset,slug=slug)
+        data = get_object_or_404(queryset,slug=slug,ready_to_solve=False)
         serializer  = ProblemListSerializer(
             data,
-            fields = ['tags','id','difficulty','title','testcases','starter_codes','solution_codes']
+            fields = ['tags','id','difficulty','title','description','testcases','starter_codes','solution_codes']
         )
         return Response(serializer.data) 
 
@@ -59,7 +62,7 @@ class ProblemView(viewsets.ViewSet):
 
     @action(detail=True,methods=['PATCH',],url_path='update')
     def update_problem(self, request, slug=None):
-        obj = get_object_or_404(self.queryset,slug=slug) 
+        obj = get_object_or_404(self.queryset,slug=slug,ready_to_solve=False) 
         self.check_object_permissions(request,obj)
         serializer = ProblemCreateUpdateSerializer(
             instance = obj,
@@ -74,7 +77,7 @@ class ProblemView(viewsets.ViewSet):
 
     @action(detail=True,methods=['DELETE',],url_path='delete')
     def delete_problem(self, request, slug=None):
-        obj = get_object_or_404(self.queryset,slug=slug)
+        obj = get_object_or_404(self.queryset,slug=slug,ready_to_solve=False)
         self.check_object_permissions(request,obj)
         obj.delete()
         return Response({'info':'Delete Success'})

@@ -16,6 +16,8 @@ const UpdateGeneralFields: React.FC<{
     const { updateProblemSingleFields, problems } = useUpdateProblem();
     const {data} = useSession()
 
+    console.log(problems[slug])
+
     const handleSubmit = async()=>{
         try{
             await patchProblem(slug,data!.user.access,{

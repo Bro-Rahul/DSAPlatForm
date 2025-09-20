@@ -13,7 +13,7 @@ from submissions.models import Submissions
 from datetime import datetime
 import uuid
 import subprocess
-import json
+
 
 class SubmissionsView(viewsets.ViewSet):
     lookup_field = 'slug'
@@ -58,14 +58,17 @@ class SubmissionsView(viewsets.ViewSet):
                 },status=status.HTTP_200_OK)
         
         
-        complete_code = f"{obj['solution_codes'][lang]}\n{code}"
+        complete_code = f"{code}\n{obj['solution_codes'][lang]}"
+        print(complete_code)
+        print(lang)
+
         try:
             result = subprocess.run(
                 ['docker','run','--rm','--name',container_name,lang,complete_code,testcases],
                 text=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                timeout=5
+                timeout=10
             )
         except subprocess.TimeoutExpired as e:
             result = subprocess.run(
@@ -74,9 +77,10 @@ class SubmissionsView(viewsets.ViewSet):
                 stderr=subprocess.PIPE,
                 text=True
             )
-            subprocess.run(['docker', 'rm', '-f', container_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            err = subprocess.run(['docker', 'rm', '-f', container_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             execution_results: List[str] = result.stdout.split("\n")[:-1]
             testcaseAt = len(result.stdout.split("\n"))
+            print(err.stderr)
             return Response({   
                 'allPass': False,
                 'inValidTestCase': False,

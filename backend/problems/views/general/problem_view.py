@@ -23,7 +23,7 @@ class ProblemView(ViewSet):
         return super().get_permissions()
 
     def get_queryset(self):
-        return Problems.objects.prefetch_related("tags")
+        return Problems.objects.prefetch_related("tags").filter(ready_to_solve=True)
     
 
     @method_decorator(cache_page(60*60*2,key_prefix="problems"))
@@ -33,7 +33,7 @@ class ProblemView(ViewSet):
 
     @method_decorator(cache_page(60*60*2))
     def retrieve(self, request, slug=None):
-        queryset = Problems.objects.prefetch_related("tags",)
+        queryset = self.get_queryset()
         data = get_object_or_404(queryset,slug=slug)
         serializer  = ProblemListSerializer(
             data,
@@ -44,7 +44,7 @@ class ProblemView(ViewSet):
     @action(methods=["GET"], detail=True, url_path="description")
     def get_problem_description(self, request, slug=None):
         problem = Problems.objects\
-                        .filter(slug=slug)\
+                        .filter(slug=slug,ready_to_solve=True)\
                         .prefetch_related("comments","submissions")\
                         .first()
         
@@ -70,7 +70,7 @@ class ProblemView(ViewSet):
 
     @action(methods=["GET",],detail=True,url_path="editors-codes")
     def get_user_submissions(self,request,slug=None):
-        data = get_object_or_404(Problems,slug=slug)
+        data = get_object_or_404(Problems,slug=slug,ready_to_solve=True)
         serializer  = ProblemListSerializer(
             data,
             fields = ['starter_codes',"testcases"],
@@ -80,7 +80,7 @@ class ProblemView(ViewSet):
 
     @action(methods=["GET",],detail=True,url_path="solutions")
     def get_problem_solutions(self,request,slug=None):
-        queryset = Problems.objects.prefetch_related("tags",)
+        queryset = self.get_queryset()
         data = get_object_or_404(queryset,slug=slug)
         serializer  = ProblemListSerializer(
             data,

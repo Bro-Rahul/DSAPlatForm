@@ -28,7 +28,7 @@ class Problems(models.Model):
     testcases = models.TextField()
     starter_codes = models.JSONField(default=defaultcodes)
     solution_codes = models.JSONField(default=defaultcodes)
-
+    ready_to_solve = models.BooleanField(default=False)
 
     def save(self,*args, **kwargs):
         if not self.slug:
