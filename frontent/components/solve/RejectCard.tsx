@@ -29,8 +29,9 @@ const RejectedCard:React.FC<{
     }
     return (
         <li className='w-full p-2 odd:bg-zinc-700/50'>
-            <div onClick={handleClick} className='flex items-center rounded-xl px-4 py-1 text-white cursor-pointer'>
+            <div onClick={handleClick} className='flex flex-row justify-between items-center rounded-xl px-4 py-1 text-white cursor-pointer'>
                 <p className="text-zinc-300"><span className="font-bold text-red-400 text-lg">Rejected </span>{result?.details.testcasePassed} passed<br /> <span className="text-sm text-stone-300">{getFormatedDateString(result.details.dateTimestr)}</span></p>
+                <p>{result.submission_lang.toUpperCase()}</p>
             </div>
         </li>
     )

@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from typing import List
 from ...validators.SubmissionSerializer import RunCodeValidator,SubmitCodeValidator
+from ...utils.index import get_formated_code
 from constants.main import formateErrorMessage
 from testcaseValidators.main import validators_func
 from problems.models import Problems
@@ -58,10 +59,7 @@ class SubmissionsView(viewsets.ViewSet):
                 },status=status.HTTP_200_OK)
         
         
-        complete_code = f"{code}\n{obj['solution_codes'][lang]}"
-        print(complete_code)
-        print(lang)
-
+        complete_code = get_formated_code(code,obj['solution_codes'][lang],lang)
         try:
             result = subprocess.run(
                 ['docker','run','--rm','--name',container_name,lang,complete_code,testcases],
@@ -118,7 +116,7 @@ class SubmissionsView(viewsets.ViewSet):
     def submit_code(self,request,slug=None):
         serializer = SubmitCodeValidator(data=request.data)
         try:
-            obj = Problems.objects.get(slug=slug)
+            obj = Problems.objects.get(slug=slug)   
         except Exception as e:
             return Response({
                 'info':str(e)},
@@ -132,11 +130,13 @@ class SubmissionsView(viewsets.ViewSet):
         
         lang = serializer.validated_data.get('lang',None)
         code = serializer.validated_data.get('code',None)
-        complete_code = f"{obj.solution_codes[lang]}\n{code}"
         container_name = f"temp_container_{uuid.uuid4().hex}"
         testcases:List[str] = obj.testcases.split("\n")
         validations = validators_func(slug=slug.replace("-","_"),testcases=testcases)
         testcase_len = len(testcases)
+        
+        complete_code = get_formated_code(code,obj.solution_codes[lang],lang)
+
 
         if not validations['valid']:
             return Response({
@@ -162,7 +162,7 @@ class SubmissionsView(viewsets.ViewSet):
                 text=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                timeout=5
+                timeout=10
                 )
         except subprocess.TimeoutExpired as e:
             result = subprocess.run(

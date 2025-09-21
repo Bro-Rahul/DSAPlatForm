@@ -21,7 +21,7 @@ const SubmissionsPage:React.FC<{
     history.status === "accepted" ? <AcceptedCard result={history} key={index} /> : <RejectedCard result={history} key={index} />
   ))
   return (
-    <ol className='w-full bg-zinc-800 h-full space-y-2'>
+    <ol className='w-full bg-zinc-800 h-full space-y-2 overflow-y-scroll custom-scrollbar'>
       {content}
     </ol>
   )
