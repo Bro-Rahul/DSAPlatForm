@@ -6,15 +6,7 @@ import { ProblemCommentResponseType } from "@/types/response";
 
 export async function getProblemComments(slug: string, token?: string): Promise<ProblemCommentResponseType[]> {
     try {
-        let options;
-        if (token) {
-            options = {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }
-        }
-        const response = await generalApi.get(`problem/${slug}/comments`, options);
+        const response = await generalApi.get(`problem/${slug}/comments`);
         return response.data;
     } catch (err: any) {
         const error = err.response.info || err.response.detail || "Can't fetch the problem"
@@ -25,15 +17,8 @@ export async function getProblemComments(slug: string, token?: string): Promise<
 
 export async function getProblemCommentSubComments(slug: string,commentId:number, token?: string): Promise<ProblemCommentResponseType[]> {
     try {
-        let options;
-        if (token) {
-            options = {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }
-        }
-        const response = await generalApi.get(`problem/${slug}/comments/${commentId}/subcomments/`, options);
+        
+        const response = await generalApi.get(`problem/${slug}/comments/${commentId}/subcomments/`);
         return response.data;
     } catch (err: any) {
         const error = err.response.info || err.response.detail || "Can't fetch the problem"

@@ -8,6 +8,9 @@ import animationData from "@/public/animations/loading.json";
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import useProblem from '@/store/useProblem';
+import toast from 'react-hot-toast';
+import Toast from '../toast';
+import { icons } from '@/constants/icons';
 
 
 const SubmitCodeButton: React.FC<{
@@ -46,7 +49,16 @@ const SubmitCodeButton: React.FC<{
                 lang : selectedLang,
             }); 
             router.push(`/problems/${slug}/result`);
-        } catch (err) {
+        } catch (err:any) {
+            toast.custom(<Toast
+                icon={icons.errorIcon}
+                success={false}
+                text={err.message}
+            />,{
+                position : 'bottom-right',
+                duration: 3000,
+
+            })
             console.log(err);
         } finally {
             setLoading(false);

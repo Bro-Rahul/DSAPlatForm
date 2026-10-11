@@ -34,7 +34,8 @@ export async function postSubmitCode(slug:string,token:string,payload:SubmitCode
         });
         return response.data
     }catch(err:any){
-        const error = err.response.data.info[0] || err.message
+        console.log(err)
+        const error = err.response.data?.info?.[0] || err.response.data.detail || err.message
         throw Error(error);
     }
 }
